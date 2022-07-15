@@ -1,0 +1,32 @@
+{
+  "name": "@pjblog/cli",
+  "version": "0.0.0",
+  "description": "pjblog:cli",
+  "author": "shenyunjie",
+  "homepage": "https://github.com/pjblog/blog/tree/master/packages/cli",
+  "license": "MIT",
+  "main": "dist/index.js",
+  "keywords": [
+    "blog"
+  ],
+  "directories": {
+    "lib": "src"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "rm -rf ./dist && tsc"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "bin": {
+    "pjblog": "./dist/index.js"
+  },
+  "dependencies": {
+    "@pjblog/blog": "^0.0.0",
+    "chalk": "4.x",
+    "commander": "^9.3.0"
+  }
+}

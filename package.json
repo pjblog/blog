@@ -1,0 +1,15 @@
+{
+  "name": "@pjblog/blog",
+  "version": "0.0.0",
+  "description": "pjblog core",
+  "scripts": {
+    "build": "rm -rf ./dist && tsc -d",
+    "create": "node scripts/create.js",
+    "dev": "ts-node packages/cli/src/index.ts"
+  },
+  "devDependencies": {
+    "inquirer": "^8.1.0",
+    "lerna": "^5.1.8",
+    "typescript": "^4.2.4"
+  }
+}

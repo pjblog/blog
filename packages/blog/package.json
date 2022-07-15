@@ -1,0 +1,44 @@
+{
+  "name": "@pjblog/blog",
+  "version": "0.0.0",
+  "description": "pjblog:blog",
+  "author": "shenyunjie",
+  "homepage": "https://github.com/pjblog/blog/tree/master/packages/blog",
+  "license": "MIT",
+  "main": "dist/index.js",
+  "keywords": [
+    "blog"
+  ],
+  "directories": {
+    "lib": "src"
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "rm -rf ./dist && tsc"
+  },
+  "publishConfig": {
+    "access": "public"
+  },
+  "dependencies": {
+    "@stdlib/fs-resolve-parent-path": "^0.0.8",
+    "@typeservice/http": "^1.0.11",
+    "@typeservice/process": "^1.0.4",
+    "fs-extra": "^10.1.0",
+    "ioredis": "^5.2.0",
+    "koa-bodyparser": "^4.3.0",
+    "nanoid": "^4.0.0",
+    "path-to-regexp": "^6.2.1",
+    "randomstring": "^1.2.2",
+    "typeorm": "^0.3.7"
+  },
+  "devDependencies": {
+    "@types/crypto-js": "^4.1.1",
+    "@types/fs-extra": "^9.0.13",
+    "@types/koa-bodyparser": "^4.3.7",
+    "@types/node": "^18.0.4",
+    "@types/randomstring": "^1.1.8",
+    "crypto-js": "^4.1.1"
+  }
+}
