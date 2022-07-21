@@ -1,13 +1,13 @@
 import * as bodyParser from 'koa-bodyparser';
 import { createProcess } from '@typeservice/process';
-import { createHTTPServer, CONTEXT_HTTP_APPLICATION } from '@typeservice/http';
+import { createHTTPServer, CONTEXT_HTTP_APPLICATION } from './lib';
+import { ErrorBoundary } from './middlewares';
 import { 
   logger, 
   loadConfigs, 
   createORMServer, 
   createCacheServer, 
   container,
-  withErrorBoundary
 } from './utils';
 import { 
   BlogUserEntity,
@@ -58,9 +58,9 @@ export function mount() {
     container,
     port: configs.port,
     services: loadServices,
-    middlewares: [withErrorBoundary, bodyParser()],
+    middlewares: [ErrorBoundary, bodyParser()],
     bootstrap(port) {
-      CONTEXT_HTTP_APPLICATION.value.keys = ['pjblog', 'cookie'];
+      CONTEXT_HTTP_APPLICATION.value.keys = configs.cookie;
       logger.info('-', '[Server]', 'Blog start on port', port)
     }
   }));

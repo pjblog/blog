@@ -7,6 +7,7 @@ export interface TConfigs {
   orm: TORMConfigs,
   redis?: TRedisConfigs,
   port: number,
+  cookie: string[],
 }
 
 export function loadConfigs(): TConfigs {

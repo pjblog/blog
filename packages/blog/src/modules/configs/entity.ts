@@ -52,6 +52,14 @@ export class BlogConfigsEntity {
   public blog_login_expires: number;
 
   @Column({
+    type: 'varchar',
+    length: 100,
+    comment: '博客主题',
+    nullable: true,
+  })
+  public blog_theme: string;
+
+  @Column({
     type: 'timestamp',
     comment: '创建时间'
   })

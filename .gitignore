@@ -24,3 +24,4 @@ test.json
 lerna-debug.log
 /cache
 /pjblog.config.json
+/theme
