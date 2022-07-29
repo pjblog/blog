@@ -5,7 +5,7 @@
   "scripts": {
     "build": "rm -rf ./dist && tsc -d",
     "create": "node scripts/create.js",
-    "dev": "ts-node packages/cli/src/index.ts"
+    "dev": "node scripts/load blog main.ts"
   },
   "devDependencies": {
     "antd": "^4.21.7",

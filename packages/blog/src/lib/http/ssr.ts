@@ -7,7 +7,7 @@ import { TAssets, THeaderScript } from '@coka/cli';
 export async function ServerSideRender(ctx: Context, next: Next) {
   if (ctx.path.startsWith('/api')) return await next();
   const configs = await BlogConfigStorage.get();
-  configs.blog_theme = resolve(process.cwd(), 'theme');
+  configs.blog_theme = resolve(process.cwd(), '../../../', 'theme');
   if (!configs.blog_theme) return await next();
   const pkgfile = resolve(configs.blog_theme, 'package.json');
   if (!existsSync(pkgfile)) return await next();

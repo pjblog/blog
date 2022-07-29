@@ -22,6 +22,7 @@ nicknames.json
 package-lock.json
 test.json
 lerna-debug.log
+/src/cache
 /cache
 /pjblog.config.json
 /theme

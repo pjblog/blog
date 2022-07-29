@@ -15,17 +15,21 @@ import {
   BlogConfigsEntity,
   HttpBlogConfigs,
   BlogConfigsService,
+  BlogCategoryEntity,
+  HttpBlogCategory
 } from './modules';
 
 const info = require('../package.json');
 const loadServices = [
   HttpBlogUser,
   HttpBlogConfigs,
+  HttpBlogCategory,
 ]
 
 export const entities = [
   BlogUserEntity,
   BlogConfigsEntity,
+  BlogCategoryEntity,
 ]
 
 export function mount() {
@@ -65,7 +69,7 @@ export function mount() {
     }
   }));
 
-  bootstrap();
+  return bootstrap();
 }
 
 export * from './utils';

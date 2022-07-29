@@ -22,6 +22,9 @@ export class FileCache implements ClassicCache {
     await ensureDir(dir);
     writeFileSync(filepath, JSON.stringify({ value }), 'utf8');
     if (seconds) await this.expire(key, seconds);
+    if (require.cache[filepath]) {
+      delete require.cache[filepath];
+    }
     return value;
   }
 
@@ -55,7 +58,6 @@ export class FileCache implements ClassicCache {
     if (require.cache[filepath]) {
       delete require.cache[filepath];
     }
-    require(filepath);
     return true;
   }
 }

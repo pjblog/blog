@@ -3,25 +3,32 @@ import { HTTPController, HTTPRequestBody, HTTPRouter, HTTPRouterMiddleware } fro
 import { BlogConfigsService } from './service';
 import { BlogConfigStorage } from './store';
 import { TSetBlogConfigsEntityProps } from './types';
-import { BlogUserLoginedMiddleware, BlogUserLoginedWithAdminMiddleware } from '../user/middleware';
+import { BlogUserInfoMiddleware, BlogUserLoginedMiddleware, BlogUserLoginedWithAdminMiddleware } from '../../middlewares';
 
 @HTTPController()
 export class HttpBlogConfigs {
   @inject(BlogConfigsService) private readonly service: BlogConfigsService;
+
+  /**
+   * 获取配置
+   * @returns 
+   */
   @HTTPRouter({
     pathname: '/api/configs',
     methods: 'GET'
   })
+  @HTTPRouterMiddleware(BlogUserInfoMiddleware)
   @HTTPRouterMiddleware(BlogUserLoginedMiddleware)
   @HTTPRouterMiddleware(BlogUserLoginedWithAdminMiddleware)
   public getConfigs() {
-    return BlogConfigStorage.get();
+    return this.service.getConfigs();
   }
 
   @HTTPRouter({
     pathname: '/api/configs',
     methods: 'POST'
   })
+  @HTTPRouterMiddleware(BlogUserInfoMiddleware)
   @HTTPRouterMiddleware(BlogUserLoginedMiddleware)
   @HTTPRouterMiddleware(BlogUserLoginedWithAdminMiddleware)
   public async setConfigs(@HTTPRequestBody() data: TSetBlogConfigsEntityProps) {

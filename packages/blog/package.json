@@ -24,10 +24,12 @@
   "dependencies": {
     "@coka/cli": "^1.0.17",
     "@stdlib/fs-resolve-parent-path": "^0.0.8",
+    "@types/gravatar": "^1.8.3",
     "@types/koa-send": "^4.1.3",
     "@typeservice/http": "^1.0.12",
     "@typeservice/process": "^1.0.4",
     "fs-extra": "^10.1.0",
+    "gravatar": "^1.8.2",
     "ioredis": "^5.2.0",
     "koa-bodyparser": "^4.3.0",
     "koa-send": "^5.0.1",

@@ -8,7 +8,7 @@ import { HttpBadRequestException } from '@typeservice/exception';
 export async function ServerThemeStatic(ctx: Context, next: Next) {
   if (!ctx.path.startsWith('/theme')) return await next();
   const configs = await BlogConfigStorage.get();
-  configs.blog_theme = resolve(process.cwd(), 'theme');
+  configs.blog_theme = resolve(process.cwd(), '../../../', 'theme');
   const themeStaticDictionary = resolve(configs.blog_theme, 'dist', 'client');
   if (!configs.blog_theme || !existsSync(themeStaticDictionary)) return await next();
   try {
