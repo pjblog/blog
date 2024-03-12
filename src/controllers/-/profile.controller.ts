@@ -37,6 +37,7 @@ import { BlogUserEntity } from '../../entities/user.entity';
       .set('avatar', new Schema.String().description('头像').required())
       .set('admin', new Schema.Bool().description('是否管理员').required())
       .set('website', new Schema.String().description('个人网站').required())
+      .set('forbiden', new Schema.Bool().description('是否禁止登录').required())
   ));
 })
 export default class extends Controller {
@@ -50,6 +51,7 @@ export default class extends Controller {
       avatar: user.avatar,
       admin: user.admin,
       website: user.website,
+      forbiden: user.forbiden,
     });
   }
 }
