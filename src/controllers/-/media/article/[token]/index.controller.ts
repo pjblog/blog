@@ -23,6 +23,7 @@ import { Media } from "../../../../../applications/media.app";
 import { BlogMediaEntity } from "../../../../../entities/media.entity";
 import { MediaArticleService } from "../../../../../services/media.article.service";
 import { MediaTagService } from "../../../../../services/media.tag.service";
+import { Context } from "@zille/core";
 
 @Controller.Injectable()
 @Controller.Method('POST')
@@ -49,7 +50,11 @@ import { MediaTagService } from "../../../../../services/media.tag.service";
 
   path.addResponse(200, '请求成功').schema(
     createApiSchema(
-      new Schema.Number().description('时间戳')
+      new Schema.Object()
+        .set('id', new Schema.Number())
+        .set('title', new Schema.String())
+        .set('token', new Schema.String())
+        .set('time', new Schema.String())
     )
   )
 })
@@ -58,7 +63,7 @@ export default class extends Controller<'token'> {
   private readonly media: MediaService;
   public async main(
     @Media.One media: BlogMediaEntity,
-    @Controller.Store store: Map<any, any>,
+    @Controller.Store store: Context,
     @Controller.Body body: {
       title: string,
       category: number,
@@ -68,15 +73,21 @@ export default class extends Controller<'token'> {
       markdown: string,
     }
   ) {
-    store.set(Media.Middleware_Store_NameSpace, await this.media.save(media.update({
+    const _media = await this.media.save(media.update({
       title: body.title,
       category: body.category,
       description: body.description,
-    })))
+    }))
+    store.addCache(Media.Middleware_Store_NameSpace, _media);
     const Article = await this.$use(MediaArticleService);
     const Tag = await this.$use(MediaTagService);
     await Tag.update(...body.tags);
     await Article.add(body.markdown, body.source);
-    return Response.json(Date.now())
+    return Response.json({
+      id: _media.id,
+      title: _media.media_title,
+      token: _media.media_token,
+      time: _media.gmt_create,
+    })
   }
 }

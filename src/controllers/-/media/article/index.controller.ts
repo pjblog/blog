@@ -23,6 +23,7 @@ import { MediaArticleService } from "../../../../services/media.article.service"
 import { MediaTagService } from "../../../../services/media.tag.service";
 import { Media } from "../../../../applications/media.app";
 import { Exception } from "../../../../lib/exception";
+import { Context } from "@zille/core";
 
 @Controller.Injectable()
 @Controller.Method('PUT')
@@ -47,7 +48,11 @@ import { Exception } from "../../../../lib/exception";
   path.addParameter('body', '发布需要的数据').In('body').required().schema(new Schema.Ref(definition));
   path.addResponse(200, '请求成功').schema(
     createApiSchema(
-      new Schema.Number().description('时间戳')
+      new Schema.Object()
+        .set('id', new Schema.Number())
+        .set('title', new Schema.String())
+        .set('token', new Schema.String())
+        .set('time', new Schema.String())
     )
   )
 })
@@ -57,7 +62,7 @@ export default class extends Controller {
 
   public async main(
     @Me me: BlogUserEntity,
-    @Controller.Store store: Map<any, any>,
+    @Controller.Store store: Context,
     @Controller.Body body: {
       title: string,
       category: number,
@@ -68,15 +73,20 @@ export default class extends Controller {
     }
   ) {
     const media = await this.media.add(body.title, body.category, body.description, me.id, 'article');
-    store.set(Media.Middleware_Store_NameSpace, media);
+    store.addCache(Media.Middleware_Store_NameSpace, media);
 
     const Article = await this.$use(MediaArticleService);
     const article = await Article.getOne();
-    if (!article) throw new Exception(804, '文章不存在');
+    if (article) throw new Exception(804, '文章已存在');
     const Tag = await this.$use(MediaTagService);
-    await Tag.update(...body.tags);
-    await Article.save(article.update(body.markdown, body.source));
+    await Tag.update(...(body.tags || []));
+    await Article.add(body.markdown, body.source);
 
-    return Response.json(Date.now())
+    return Response.json({
+      id: media.id,
+      title: media.media_title,
+      token: media.media_token,
+      time: media.gmt_create,
+    })
   }
 }

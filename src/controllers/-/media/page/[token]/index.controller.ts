@@ -36,7 +36,13 @@ import { BlogMediaEntity } from "../../../../../entities/media.entity";
   path.addParameter('title', '标题').In('formData').required().schema(new Schema.String());
   path.addParameter('category', '分类').In('formData').required().schema(new Schema.Number());
   path.addParameter('description', '描述').In('formData').required().schema(new Schema.String().format('textarea'));
-  path.addResponse(200, '请求成功').schema(createApiSchema(new Schema.Number()));
+  path.addResponse(200, '请求成功').schema(createApiSchema(
+    new Schema.Object()
+      .set('id', new Schema.Number())
+      .set('title', new Schema.String())
+      .set('token', new Schema.String())
+      .set('time', new Schema.String())
+  ));
 })
 export default class extends Controller<'token'> {
   @Controller.Inject(MediaService)
@@ -49,11 +55,16 @@ export default class extends Controller<'token'> {
       description: string,
     }
   ) {
-    await this.media.save(media.update({
+    const res = await this.media.save(media.update({
       title: body.title,
       category: body.category,
       description: body.description,
     }))
-    return Response.json(Date.now())
+    return Response.json({
+      id: res.id,
+      title: res.media_title,
+      token: res.media_token,
+      time: res.gmt_create,
+    })
   }
 }

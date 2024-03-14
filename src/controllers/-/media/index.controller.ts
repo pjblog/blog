@@ -35,7 +35,13 @@ import { MediaService } from "../../../services/media.service";
   path.addParameter('type', '类型').In('query').schema(new Schema.String());
   path.addResponse(200, '请求成功').schema(
     createApiSchema(
-      new Schema.Array().items(MediaSchema)
+      new Schema.Array().items(
+        new Schema.Object()
+          .set('id', new Schema.Number())
+          .set('title', new Schema.String())
+          .set('token', new Schema.String())
+          .set('time', new Schema.String())
+      )
     )
   );
 })
@@ -50,7 +56,13 @@ export default class extends Controller {
     @Controller.Query('type') type: string,
   ) {
     const [dataSource, total] = await this.media.getManyByType(page, size, { type, category });
-    return Response.json(dataSource)
+    const res = dataSource.map(data => ({
+      id: data.id,
+      title: data.media_title,
+      token: data.media_token,
+      time: data.gmt_create,
+    }))
+    return Response.json(res)
       .set('x-page', page)
       .set('x-size', size)
       .set('x-total', total);
