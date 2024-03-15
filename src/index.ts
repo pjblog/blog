@@ -37,6 +37,7 @@ import { Logger } from './applications/logger.app';
 import { Plugin } from './lib/plugin.lib';
 import { Storage } from './applications/cache/cache.app';
 import { BlogVariable } from './applications/variable.app';
+import { Plugins } from './applications/plugin.app';
 
 // exports
 export * from './applications/database.app';
@@ -118,6 +119,9 @@ class Blog extends Application {
   @Application.Inject(HttpMiddlewares)
   private readonly Middlewares: HttpMiddlewares;
 
+  @Application.Inject(Plugins)
+  private readonly plugins: Plugins;
+
   public async initialize(options: BlogProps, plugins: Newable<Plugin>[]) {
     /**
      * plugins setup
@@ -193,6 +197,7 @@ class Blog extends Application {
       if (typeof rollback === 'function') {
         plugin.uninstall = rollback;
       }
+      this.plugins.add(plugin.name, plugin);
     }
 
     this.Logger.info('PJBlog server started.');

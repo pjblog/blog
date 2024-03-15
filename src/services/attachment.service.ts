@@ -49,10 +49,16 @@ export class AttachmentService extends Service {
     return this.getRepository().remove(target);
   }
 
-  public getMany(page: number, size: number, type?: string) {
+  public getMany(page: number, size: number, options: {
+    type?: string,
+    image?: boolean,
+  } = {}) {
     const conditions: FindOptionsWhere<BlogAttachmentEntity> = {}
-    if (type) {
-      conditions.type = type;
+    if (options.type) {
+      conditions.type = options.type;
+    }
+    if (options.image) {
+      conditions.is_image = options.image;
     }
     return this.getRepository().findAndCount({
       where: conditions,

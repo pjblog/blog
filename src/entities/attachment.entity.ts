@@ -40,6 +40,13 @@ export class BlogAttachmentEntity {
   })
   public type: string;
 
+  @Column({
+    type: 'bool',
+    comment: '是否是图片',
+    default: false
+  })
+  public is_image: boolean;
+
   @Index('md5-idx', {
     unique: true,
   })
@@ -71,6 +78,7 @@ export class BlogAttachmentEntity {
     this.path = path;
     this.size = size;
     this.type = type;
+    this.is_image = type.startsWith('image/');
     this.md5 = md5;
     this.gmt_modified = new Date();
     return this;

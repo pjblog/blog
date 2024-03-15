@@ -48,7 +48,7 @@ export class DeleteAttachmentController extends Controller<'id'> {
   private readonly cache: AttachmentCache;
 
   public async main(@Controller.Param('id', Number) id: number) {
-    const attachment = await this.service.getOneById(Number(id));
+    const attachment = await this.service.getOneById(id);
     if (!attachment) throw new Exception(904, '附件不存在');
     const current = this.env.getAttachmentAbsolutePath(attachment.path);
     await this.service.del(attachment);

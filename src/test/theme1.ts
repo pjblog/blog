@@ -1,21 +1,15 @@
-/**
- * Copyright (c) PJBlog Platforms, net. and affiliates.
- *
- * This source code is licensed under the MIT license found in the
- * LICENSE file in the root directory of this source tree.
- *
- * @Author evio<evio@vip.qq.com>
- * @Website https://www.pjhome.net
- */
-
-'use strict';
-
-import blog, {
+import {
   ArchivePage,
   DetailPgae,
   HomePage,
-  Plugin, Schema
-} from './index';
+  Plugin, SystemConfigsSchema
+} from '../index';
+import { readFileSync } from 'node:fs';
+import { resolve } from 'node:path';
+import { fileURLToPath } from 'node:url';
+
+const __dirname = fileURLToPath(new URL('.', import.meta.url));
+const readme = readFileSync(resolve(__dirname, 'readme.md'), 'utf8')
 
 @HomePage.Injectable()
 class MyHomePage extends HomePage {
@@ -60,14 +54,16 @@ class MyArchivePage extends ArchivePage {
 }
 
 @Plugin.Injectable()
-class CommonPlugin extends Plugin<{ a: number }> {
+export class BlogTheme1 extends Plugin {
   public readonly cwd: string = process.cwd();
-  public readonly code: string = 'xxxxxxxxx';
+  public readonly code: string = '0fab5236cc7429c2da0df154ef6bedff';
   public readonly version: string = '1.0.1';
   public readonly name: string = 'pjblog-theme-default';
-  public readonly description: string = 'desc';
-  public readonly readme: string = 'readme';
-  public readonly schema = new Schema.Object().set('a', new Schema.Number());
+  public readonly description: string = '使用 Modal.destroyAll() 可以销毁弹出的确认窗。通常用于路由监听当中，处理路由前进、后退不能销毁确认对话框的问题。';
+  public readonly readme: string = readme;
+  public readonly cover: string = '/-/attachment/6';
+  public previews: string[] = ['/-/attachment/5', '/-/attachment/4', '/-/attachment/3']
+  public readonly schema = SystemConfigsSchema;
 
   public async initialize() {
     await this.$theme('home', MyHomePage);
@@ -75,24 +71,3 @@ class CommonPlugin extends Plugin<{ a: number }> {
     await this.$theme('archive', MyArchivePage);
   };
 }
-
-blog({
-  http: {
-    port: 3000,
-  },
-  cache: {
-    type: 'redis',
-  },
-  database: {
-    "type": "mysql",
-    "host": "127.0.0.1",
-    "port": 3306,
-    "username": "root",
-    "password": "fdnsyj211314",
-    "database": "npm"
-  },
-  redis: {
-    host: '127.0.0.1',
-    port: 6379,
-  }
-}, [CommonPlugin])

@@ -11,7 +11,7 @@
   ],
   "scripts": {
     "build": "rm -rf ./dist && tsc -d && fix-esm-import-path --preserve-import-type ./dist",
-    "dev": "node --loader ts-node/esm ./src/test.ts",
+    "dev": "node --loader ts-node/esm ./src/test/index.ts",
     "pub": "npm run build && git add . && git commit -am 'update' && git push",
     "banner": "node scripts/banner.cjs"
   },

@@ -15,6 +15,7 @@ import { Storage } from '../applications/cache/cache.app';
 import { compile, PathFunction } from 'path-to-regexp';
 import { Env } from '../applications/env.app';
 import { ExtractParamsFromString } from '../global.types';
+import { objectFormatString } from '../utils';
 
 export type CacheResult<R> = {
   value: R,
@@ -38,7 +39,7 @@ export abstract class Cache<T extends string, P extends any[], R> extends Servic
   }
 
   private makePath(params?: ExtractParamsFromString<T>) {
-    let key = this.toPath(params || {});
+    let key = this.toPath(objectFormatString(params || {}));
     if (key.startsWith('/')) key = key.substring(1);
     return this.Env.toPath(key.replace(/\//g, ':'));
   }

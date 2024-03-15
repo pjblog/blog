@@ -39,3 +39,12 @@ export function diff<T>(a: T[], b: T[]) {
     adds: b
   }
 }
+
+export function objectFormatString(o: object) {
+  const a: object = {}
+  for (const key in o) {
+    // @ts-ignore
+    a[key] = o[key] + ''
+  }
+  return a;
+}

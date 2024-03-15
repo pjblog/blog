@@ -28,8 +28,23 @@ export abstract class Plugin<T extends object = any> extends Application {
   public abstract readonly description: string;
   public abstract readonly readme: string;
   public abstract readonly schema: SchemaBase;
+  public abstract readonly cover: string;
+  public abstract readonly previews: string[];
   public abstract initialize(): unknown;
   public uninstall?: Function;
+
+  public toJSON() {
+    return {
+      cwd: this.cwd,
+      code: this.code,
+      version: this.version,
+      name: this.name,
+      description: this.description,
+      readme: this.readme,
+      cover: this.cover,
+      previews: this.previews,
+    }
+  }
 
   public async terminate() {
     const themes = await this.$use(Themes);

@@ -20,6 +20,7 @@ import { AttachmentService } from "../../../services/attachment.service";
   path.addParameter('page', '页码').In('query').required().schema(new Schema.Number(1)).required();
   path.addParameter('size', '分页大小').In('query').required().schema(new Schema.Number(10)).required();
   path.addParameter('type', '类型').In('query').required().schema(new Schema.String()).required();
+  path.addParameter('image', '是否是图片').In('query').required().schema(new Schema.Number(0).enum(0, 1)).required();
   path.addResponse(200, '请求成功').schema(createApiSchema(
     new Schema.Array().items(AttachmentSchema)
   ));
@@ -32,8 +33,12 @@ export class GetAttachmentsController extends Controller {
     @Controller.Query('page', TransformStringToNumber(1)) page: number,
     @Controller.Query('size', TransformStringToNumber(10)) size: number,
     @Controller.Query('type') type: string,
+    @Controller.Query('image', TransformStringToNumber(0), Boolean) image: boolean,
   ) {
-    const [dataSource, total] = await this.service.getMany(page, size, type);
+    const [dataSource, total] = await this.service.getMany(page, size, {
+      type,
+      image,
+    });
     return Response.json(dataSource)
       .set('x-page', page)
       .set('x-size', size)

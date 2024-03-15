@@ -65,6 +65,8 @@ const [Page] = swagger.createGroup('Page', '单页相关');
 const [Article] = swagger.createGroup('Article', '文章相关');
 const [Comment] = swagger.createGroup('Comment', '评论相关');
 const [Attachment] = swagger.createGroup('Attachment', '附件相关');
+const [Theme] = swagger.createGroup('Theme', '主题相关');
+const [Plugin] = swagger.createGroup('Plugin', '插件相关');
 
 export const SwaggerWithGlobal = Global;
 export const SwaggerWithUser = User;
@@ -75,6 +77,8 @@ export const SwaggerWithArticle = Article;
 export const SwaggerWithComment = Comment;
 export const SwaggerWithWebPage = WebPage;
 export const SwaggerWithAttachment = Attachment;
+export const SwaggerWithTheme = Theme;
+export const SwaggerWithPlugin = Plugin;
 
 export function createApiSchema<T extends SchemaBase>(data: T) {
   return new Schema.Object()

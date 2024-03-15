@@ -19,6 +19,10 @@ export class Themes extends Application {
 
   public setup() { }
 
+  public has(name: string) {
+    return this.stacks.has(name)
+  }
+
   public add(plugin: string, name: AcceptWebPageNameSpace, theme: Newable) {
     if (!this.stacks.has(plugin)) {
       this.stacks.set(plugin, new Map());
@@ -32,5 +36,9 @@ export class Themes extends Application {
       this.stacks.delete(name);
     }
     return this;
+  }
+
+  public getAllNames() {
+    return Array.from(this.stacks.keys());
   }
 }
