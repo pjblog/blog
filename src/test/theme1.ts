@@ -62,6 +62,7 @@ export class BlogTheme1 extends Plugin {
   public readonly description: string = '使用 Modal.destroyAll() 可以销毁弹出的确认窗。通常用于路由监听当中，处理路由前进、后退不能销毁确认对话框的问题。';
   public readonly readme: string = readme;
   public readonly cover: string = '/-/attachment/6';
+  public readonly advanceStaticDirectory: string = null;
   public previews: string[] = ['/-/attachment/5', '/-/attachment/4', '/-/attachment/3']
   public readonly schema = SystemConfigsSchema;
 

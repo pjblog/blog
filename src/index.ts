@@ -184,7 +184,7 @@ class Blog extends Application {
     this.Logger.debug(`+ System controllers -> \`${controllers}\``);
     for (const [code, directory] of directories.entries()) {
       await LoadControllers(directory, http.app, {
-        prefix: '/-/plugin/' + code,
+        prefix: '/-/plugin/' + code + '/api',
       })
       this.Logger.debug(`+ Plugin controllers -> \`${directory}\``);
     }

@@ -30,6 +30,7 @@ export abstract class Plugin<T extends object = any> extends Application {
   public abstract readonly schema: SchemaBase;
   public abstract readonly cover: string;
   public abstract readonly previews: string[];
+  public abstract readonly advanceStaticDirectory: string;
   public abstract initialize(): unknown;
   public uninstall?: Function;
 

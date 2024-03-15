@@ -11,6 +11,7 @@
 'use strict';
 
 import blog from '../index';
+import { BlogPlugin1 } from './plugin1';
 import { BlogTheme1 } from './theme1';
 import { BlogTheme2 } from './theme2';
 
@@ -34,4 +35,4 @@ blog({
     host: '127.0.0.1',
     port: 6379,
   }
-}, [BlogTheme1, BlogTheme2])
+}, [BlogTheme1, BlogTheme2, BlogPlugin1])
