@@ -11,25 +11,24 @@
 'use strict';
 
 import { Controller, Response } from "@zille/http-controller";
-import { Swagger, SwaggerWithTheme, createApiSchema } from "../../../../lib/swagger/swagger";
+import { Swagger, SwaggerWithPlugin, createApiSchema } from "../../../../lib/swagger/swagger";
 import { Schema } from "../../../../lib/schema/schema.lib";
 import { JSONErrorCatch } from "../../../../middlewares/catch.mdw";
 import { DataBaseMiddleware } from "../../../../middlewares/database.mdw";
 import { UserAdminableMiddleware } from "../../../../middlewares/user.mdw";
-import { Themes } from "../../../../applications/theme.app";
 import { Plugins } from "../../../../applications/plugin.app";
 import { Exception } from "../../../../lib/exception";
 
 @Controller.Injectable()
 @Controller.Method('GET')
 @Controller.Middleware(JSONErrorCatch, DataBaseMiddleware(), UserAdminableMiddleware)
-@Swagger.Definition(SwaggerWithTheme, path => {
+@Swagger.Definition(SwaggerWithPlugin, path => {
   path
-    .summary('获取主题配置')
-    .description('获取主题配置')
+    .summary('获取插件配置')
+    .description('获取插件配置')
     .produces('application/json');
 
-  path.addParameter('name', '主题名').In('path').schema(new Schema.String());
+  path.addParameter('name', '插件名').In('path').schema(new Schema.String());
   path.addResponse(200, '请求成功').schema(createApiSchema(
     new Schema.Object()
       .set('value', new Schema.Object())
@@ -37,14 +36,11 @@ import { Exception } from "../../../../lib/exception";
   ));
 })
 export class GetThemeConfigsController extends Controller<'name'> {
-  @Controller.Inject(Themes)
-  private readonly themes: Themes;
 
   @Controller.Inject(Plugins)
   private readonly plugins: Plugins;
 
   public async main(@Controller.Param('name') name: string) {
-    if (!this.themes.has(name)) throw new Exception(400, '找不到主题');
     if (!this.plugins.has(name)) throw new Exception(400, '找不到插件');
     const plugin = this.plugins.get(name);
     return Response.json({

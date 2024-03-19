@@ -173,6 +173,7 @@ class Blog extends Application {
 
     // middleware for desktop
     this.Middlewares.add('prefix', Desktop);
+    this.Middlewares.add('suffix', this.plugins.createAdvanceServeStaticMiddleware());
 
     /**
      * Http setup

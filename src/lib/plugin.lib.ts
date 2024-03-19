@@ -44,6 +44,8 @@ export abstract class Plugin<T extends object = any> extends Application {
       readme: this.readme,
       cover: this.cover,
       previews: this.previews,
+      advancable: !!this.advanceStaticDirectory,
+      configable: !!this.schema,
     }
   }
 

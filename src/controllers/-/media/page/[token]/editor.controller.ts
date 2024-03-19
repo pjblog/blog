@@ -34,7 +34,6 @@ import { BlogMediaEntity } from "../../../../../entities/media.entity";
     createApiSchema(
       new Schema.Object()
         .set('title', new Schema.String())
-        .set('category', new Schema.Number())
         .set('description', new Schema.String())
     )
   )
@@ -43,7 +42,6 @@ export default class extends Controller<'token'> {
   public async main(@Media.One media: BlogMediaEntity) {
     return Response.json({
       title: media.media_title,
-      category: media.media_category,
       description: media.media_description,
     })
   }

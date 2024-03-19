@@ -34,7 +34,6 @@ import { BlogMediaEntity } from "../../../../../entities/media.entity";
 
   path.addParameter('token', 'token').In('path').required().schema(new Schema.String());
   path.addParameter('title', '标题').In('formData').required().schema(new Schema.String());
-  path.addParameter('category', '分类').In('formData').required().schema(new Schema.Number());
   path.addParameter('description', '描述').In('formData').required().schema(new Schema.String().format('textarea'));
   path.addResponse(200, '请求成功').schema(createApiSchema(
     new Schema.Object()
@@ -51,13 +50,12 @@ export default class extends Controller<'token'> {
     @Media.One media: BlogMediaEntity,
     @Controller.Body body: {
       title: string,
-      category: number,
       description: string,
     }
   ) {
     const res = await this.media.save(media.update({
       title: body.title,
-      category: body.category,
+      category: 0,
       description: body.description,
     }))
     return Response.json({

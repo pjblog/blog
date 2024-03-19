@@ -31,7 +31,6 @@ import { HttpBodyMiddleware } from "../../../../middlewares/http.body.mdw";
     .produces('application/json');
 
   path.addParameter('title', '标题').In('formData').required().schema(new Schema.String());
-  path.addParameter('category', '分类').In('formData').required().schema(new Schema.Number());
   path.addParameter('description', '描述').In('formData').schema(new Schema.String().format('textarea'));
   path.addResponse(200, '请求成功').schema(createApiSchema(
     new Schema.Object()
@@ -48,11 +47,10 @@ export default class extends Controller {
     @Me me: BlogUserEntity,
     @Controller.Body body: {
       title: string,
-      category: number,
       description: string,
     }
   ) {
-    const res = await this.media.add(body.title, body.category, body.description, me.id, 'page');
+    const res = await this.media.add(body.title, 0, body.description, me.id, 'page');
     return Response.json({
       id: res.id,
       title: res.media_title,

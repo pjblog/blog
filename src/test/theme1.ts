@@ -59,7 +59,7 @@ export class BlogTheme1 extends Plugin {
   public readonly code: string = '0fab5236cc7429c2da0df154ef6bedff';
   public readonly version: string = '1.0.1';
   public readonly name: string = 'pjblog-theme-default';
-  public readonly description: string = '使用 Modal.destroyAll() 可以销毁弹出的确认窗。通常用于路由监听当中，处理路由前进、后退不能销毁确认对话框的问题。';
+  public readonly description: string = '使用 Modal.destroyAll() 可以销毁弹出的确认窗。通常用于路由监听当中，处理路由前进、后退不能销毁确认对话框的问题。A ReactJS image Viewer Component for mobile 一款基于react的图片预览组件，特别适合于异步获取的富文本中的图片，点击图片即可全屏显示，并且带有轮播';
   public readonly readme: string = readme;
   public readonly cover: string = '/-/attachment/6';
   public readonly advanceStaticDirectory: string = null;
