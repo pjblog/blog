@@ -23,6 +23,7 @@ import { LoadControllers, Newable } from '@zille/http-controller';
 import { resolve } from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { existsSync } from 'node:fs';
+import { createRequire } from 'node:module';
 
 import { BlogUserEntity } from './entities/user.entity';
 import { BlogCategoryEntity } from './entities/category.entity';
@@ -103,6 +104,11 @@ export { default as DetailController } from './controllers/[token]/index.control
 // main code
 const __dirname = fileURLToPath(new URL('.', import.meta.url));
 const controllers = resolve(__dirname, 'controllers');
+const require = createRequire(import.meta.url);
+const pkg = require(resolve(__dirname, '../package.json'));
+
+export const version: string = pkg.version;
+export const description: string = pkg.description;
 
 @Application.Injectable()
 class Blog extends Application {
