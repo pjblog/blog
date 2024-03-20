@@ -1,13 +1,13 @@
 {
-  "name": "pjblog",
-  "version": "1.0.0",
-  "description": "somethings",
+  "name": "@pjblog/blog",
+  "version": "2.3.0",
+  "description": "PJBlog 2004-present 博客主程序工程",
   "license": "MIT",
   "type": "module",
   "main": "dist/index.js",
   "files": [
     "dist",
-    "types.d.ts"
+    "templates"
   ],
   "scripts": {
     "build": "rm -rf ./dist && tsc -d && fix-esm-import-path --preserve-import-type ./dist",
