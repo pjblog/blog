@@ -24,6 +24,7 @@ import { BlogMediaEntity } from "../../../../../entities/media.entity";
 import { MediaArticleService } from "../../../../../services/media.article.service";
 import { MediaTagService } from "../../../../../services/media.tag.service";
 import { Context } from "@zille/core";
+import { Exception } from "../../../../../lib/exception";
 
 @Controller.Injectable()
 @Controller.Method('POST')
@@ -80,9 +81,11 @@ export default class extends Controller<'token'> {
     }))
     store.addCache(Media.Middleware_Store_NameSpace, _media);
     const Article = await this.$use(MediaArticleService);
+    const article = await Article.getOne();
+    if (!article) throw new Exception(404, '找不到文章');
     const Tag = await this.$use(MediaTagService);
     await Tag.update(...body.tags);
-    await Article.add(body.markdown, body.source);
+    await Article.save(article.update(body.markdown, body.source))
     return Response.json({
       id: _media.id,
       title: _media.media_title,

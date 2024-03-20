@@ -32,7 +32,7 @@
     "typescript": "^5.4.2"
   },
   "dependencies": {
-    "@pjblog/desktop": "^2.3.4",
+    "@pjblog/desktop": "^2.3.5",
     "@zille/application": "^1.1.2",
     "@zille/configurator": "^1.1.2",
     "@zille/core": "^1.1.2",

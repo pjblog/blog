@@ -51,8 +51,8 @@ export default class extends Controller {
 
   public async main(
     @Controller.Query('page', TransformStringToNumber(1)) page: number,
-    @Controller.Query('page', TransformStringToNumber(10)) size: number,
-    @Controller.Query('category', Number) category: number,
+    @Controller.Query('size', TransformStringToNumber(10)) size: number,
+    @Controller.Query('category', TransformStringToNumber(0)) category: number,
     @Controller.Query('type') type: string,
   ) {
     const [dataSource, total] = await this.media.getManyByType(page, size, { type, category });
