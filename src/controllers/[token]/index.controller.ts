@@ -19,6 +19,7 @@ import { TransformStringToNumber } from '../../utils';
 import { DataBaseMiddleware } from '../../middlewares/database.mdw';
 import { Exception } from '../../lib/exception';
 import { DetailPgae } from '../../lib/theme/detail.lib';
+import { Next } from 'koa';
 
 @Controller.Injectable()
 @Controller.Method('GET')
@@ -31,14 +32,16 @@ import { DetailPgae } from '../../lib/theme/detail.lib';
 
   path.addResponse(200, '请求成功').schema(createApiSchema(new Schema.String()));
 })
-export default class extends Controller {
+export default class extends Controller<'token'> {
   @Controller.Inject(Themes)
   private readonly themes: Themes;
 
   public async main(
     @Controller.Query('page', TransformStringToNumber(1)) page: number,
     @Controller.Query('token') token: string,
+    @Controller.Next next: Next,
   ) {
+    if (!/^[0-9a-z]{32}$/.test(token)) return await next();
     const Theme = this.themes.current;
     if (!Theme.has('detail')) throw new Exception(400, '缺少主题文件');
     const theme = await this.$use(Theme.get('detail') as Newable<DetailPgae>);
