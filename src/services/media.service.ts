@@ -196,15 +196,22 @@ export class MediaService extends Service {
     })
   }
 
-  public async getManyNotPage(page: number, size: number, category?: number) {
+  public async getMany(page: number, size: number, options: {
+    type?: string,
+    category?: number,
+  } = {}) {
     const sql = this.getRepository().createQueryBuilder('m');
     sql.leftJoin(BlogCategoryEntity, 'c', 'c.id=m.media_category');
     sql.leftJoin(BlogUserEntity, 'u', 'u.id=m.media_user_id');
 
-    sql.where('m.media_type<>:type', { type: 'page' });
+    if (!options.type) {
+      sql.where('m.media_type<>:type', { type: 'page' });
+    } else {
+      sql.where('m.media_type=:type', { type: options.type });
+    }
 
-    if (typeof category === 'number' && category > 0) {
-      sql.andWhere('m.media_category=:category', { category })
+    if (typeof options.category === 'number' && options.category > 0) {
+      sql.andWhere('m.media_category=:category', { category: options.category })
     }
 
     sql.select('m.token', 'token');
