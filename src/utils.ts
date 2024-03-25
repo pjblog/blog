@@ -10,6 +10,9 @@
 
 'use strict';
 
+import { BlogUserEntity } from "./entities/user.entity";
+import { IMe } from "./global.types";
+
 export function TransformStringToNumber(defaultValue: number = 0) {
   return (val?: string) => {
     val = val ?? defaultValue.toString();
@@ -47,4 +50,29 @@ export function objectFormatString(o: object) {
     a[key] = o[key] + ''
   }
   return a;
+}
+
+export function createMeValue(data?: BlogUserEntity): IMe {
+  if (!data) return this.defaultValue();
+  return {
+    account: data.account,
+    nickname: data.nickname,
+    email: data.email,
+    avatar: data.avatar,
+    forbiden: data.forbiden,
+    website: data.website,
+    admin: data.admin,
+  }
+}
+
+function defaultMeValue(): IMe {
+  return {
+    account: null,
+    nickname: null,
+    email: null,
+    avatar: null,
+    forbiden: false,
+    website: null,
+    admin: false,
+  }
 }

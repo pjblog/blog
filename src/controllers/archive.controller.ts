@@ -15,10 +15,13 @@ import { NormalErrorCatch } from '../middlewares/catch.mdw';
 import { Swagger, SwaggerWithWebPage, createApiSchema } from '../lib/swagger/swagger';
 import { Schema } from '../lib/schema/schema.lib';
 import { Themes } from '../applications/theme.app';
-import { TransformStringToNumber } from '../utils';
+import { TransformStringToNumber, createMeValue } from '../utils';
 import { DataBaseMiddleware } from '../middlewares/database.mdw';
 import { Exception } from '../lib/exception';
 import { ArchivePage } from '../lib/theme/archive.lib';
+import { Me } from '../middlewares/user.mdw';
+import { BlogUserEntity } from '../entities/user.entity';
+import { Context } from '@zille/core';
 
 @Controller.Injectable()
 @Controller.Method('GET')
@@ -35,9 +38,14 @@ export default class extends Controller {
   @Controller.Inject(Themes)
   private readonly themes: Themes;
 
-  public async main(@Controller.Query('page', TransformStringToNumber(1)) page: number) {
+  public async main(
+    @Me me: BlogUserEntity,
+    @Controller.Store context: Context,
+    @Controller.Query('page', TransformStringToNumber(1)) page: number
+  ) {
     const Theme = this.themes.current;
     if (!Theme.has('archive')) throw new Exception(400, '缺少主题文件');
+    context.addCache('me', createMeValue(me));
     const theme = await this.$use(Theme.get('archive') as Newable<ArchivePage>);
     const state = await Promise.resolve(theme.state(page));
     return new Response()

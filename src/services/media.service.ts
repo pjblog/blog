@@ -17,6 +17,7 @@ import { BlogMediaEntity } from "../entities/media.entity";
 import { FindOptionsWhere, Not, Equal, LessThan, MoreThan } from "typeorm";
 import { BlogMediaCommentEntity } from "../entities/media.comment.entity";
 import { BlogUserEntity } from "../entities/user.entity";
+import { BlogCategoryEntity } from "../entities/category.entity";
 
 interface LatestCommentRaw {
   id: string,
@@ -191,6 +192,68 @@ export class MediaService extends Service {
       take: size,
       order: {
         gmt_create: 'DESC',
+      }
+    })
+  }
+
+  public async getManyNotPage(page: number, size: number, category?: number) {
+    const sql = this.getRepository().createQueryBuilder('m');
+    sql.leftJoin(BlogCategoryEntity, 'c', 'c.id=m.media_category');
+    sql.leftJoin(BlogUserEntity, 'u', 'u.id=m.media_user_id');
+
+    sql.where('m.media_type<>:type', { type: 'page' });
+
+    if (typeof category === 'number' && category > 0) {
+      sql.andWhere('m.media_category=:category', { category })
+    }
+
+    sql.select('m.token', 'token');
+    sql.addSelect('m.media_title', 'title');
+    sql.addSelect('c.id', 'category_id');
+    sql.addSelect('c.cate_name', 'category_name');
+    sql.addSelect('m.media_description', 'description');
+    sql.addSelect('u.account', 'user_account');
+    sql.addSelect('u.nickname', 'user_nickname');
+    sql.addSelect('u.avatar', 'user_avatar');
+    sql.addSelect('m.media_read_count', 'readCount');
+    sql.addSelect('m.media_type', 'type');
+    sql.addSelect('m.gmt_create', 'gmtc');
+
+    sql.orderBy('gmt_create', 'DESC');
+    sql.offset((page - 1) * size);
+    sql.limit(size);
+
+    const raws = await sql.getRawMany<{
+      token: string,
+      title: string,
+      category_id: number,
+      category_name: number,
+      description: string,
+      user_account: string,
+      user_nickname: string,
+      user_avatar: string,
+      readCount: number,
+      type: string,
+      gmtc: string,
+    }>();
+
+    return raws.map(raw => {
+      return {
+        token: raw.token,
+        title: raw.title,
+        category: raw.category_id ? {
+          id: raw.category_id,
+          name: raw.category_name
+        } : null,
+        description: raw.description,
+        user: {
+          account: raw.user_account,
+          nickname: raw.user_nickname,
+          avatar: raw.user_avatar
+        },
+        readCount: raw.readCount,
+        type: raw.type,
+        gmtc: raw.gmtc,
       }
     })
   }

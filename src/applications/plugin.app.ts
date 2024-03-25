@@ -46,18 +46,18 @@ export class Plugins extends Application {
   public createAdvanceServeStaticMiddleware(): Middleware {
     // path eg.: /-/control/plugin/5c59f49d2e796f5379f13e31c149abca/advance/assets/index.83u45.js
     return async (ctx, next) => {
+      const url = new URL('http://localhost' + ctx.url);
+      if (!url.pathname.startsWith('/-/control/plugin/')) return await next();
+      const pathname = url.pathname.substring('/-/control/plugin/'.length);
+      const pathnamesplitor = pathname.split('/');
+      if (pathnamesplitor.length < 2) return await next();
+      if (pathnamesplitor[1] !== 'advance') return await next();
+      if (pathnamesplitor[0].length !== 32) return await next();
+      const key = pathnamesplitor[0];
+      if (!this.advances.has(key)) return await next();
+      const _url = pathname.substring(pathnamesplitor[0].length + 1 + pathnamesplitor[1].length) || '/';
+      const directory = this.advances.get(key);
       const doNext = async () => {
-        const url = new URL('http://localhost' + ctx.url);
-        if (!url.pathname.startsWith('/-/control/plugin/')) return await next();
-        const pathname = url.pathname.substring('/-/control/plugin/'.length);
-        const pathnamesplitor = pathname.split('/');
-        if (pathnamesplitor.length < 2) return await next();
-        if (pathnamesplitor[1] !== 'advance') return await next();
-        if (pathnamesplitor[0].length !== 32) return await next();
-        const key = pathnamesplitor[0];
-        if (!this.advances.has(key)) return await next();
-        const _url = pathname.substring(pathnamesplitor[0].length + 1 + pathnamesplitor[1].length) || '/';
-        const directory = this.advances.get(key);
         try {
           await this.serveStatic(ctx, _url, directory);
         } catch (e) {

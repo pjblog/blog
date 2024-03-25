@@ -91,3 +91,14 @@ export interface LoginsProps {
   icon?: string,
   redirect(ctx: Context, redirect_url?: string): unknown | Promise<unknown>,
 }
+
+
+export interface IMe {
+  account: string,
+  nickname: string,
+  email: string,
+  avatar: string,
+  forbiden: boolean,
+  website: string,
+  admin: boolean,
+}
