@@ -53,7 +53,7 @@ export function objectFormatString(o: object) {
 }
 
 export function createMeValue(data?: BlogUserEntity): IMe {
-  if (!data) return this.defaultValue();
+  if (!data) return defaultMeValue();
   return {
     account: data.account,
     nickname: data.nickname,

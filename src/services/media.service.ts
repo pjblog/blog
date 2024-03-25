@@ -214,7 +214,7 @@ export class MediaService extends Service {
       sql.andWhere('m.media_category=:category', { category: options.category })
     }
 
-    sql.select('m.token', 'token');
+    sql.select('m.media_token', 'token');
     sql.addSelect('m.media_title', 'title');
     sql.addSelect('c.id', 'category_id');
     sql.addSelect('c.cate_name', 'category_name');
