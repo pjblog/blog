@@ -226,7 +226,7 @@ export class MediaService extends Service {
     sql.addSelect('m.media_type', 'type');
     sql.addSelect('m.gmt_create', 'gmtc');
 
-    sql.orderBy('gmt_create', 'DESC');
+    sql.orderBy('m.gmt_create', 'DESC');
     sql.offset((page - 1) * size);
     sql.limit(size);
 
