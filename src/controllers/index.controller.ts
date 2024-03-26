@@ -41,6 +41,7 @@ export default class extends Controller {
   public async main(
     @Me me: BlogUserEntity,
     @Controller.Store context: Context,
+    @Controller.Context(ctx => ctx.url) url: string,
     @Controller.Query('page', TransformStringToNumber(1)) page: number,
     @Controller.Query('type') type: string,
     @Controller.Query('category', TransformStringToNumber(0)) category: number,
@@ -49,7 +50,7 @@ export default class extends Controller {
     if (!Theme.has('home')) throw new Exception(400, '缺少主题文件');
     context.addCache('me', createMeValue(me));
     const theme = await this.$use(Theme.get('home') as Newable<HomePage>);
-    const state = await Promise.resolve(theme.state(page, type, category));
+    const state = await Promise.resolve(theme.state({ page, type, category, url }));
     return new Response()
       .setData(await Promise.resolve(theme.render(state)))
       .setType('.html')

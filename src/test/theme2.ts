@@ -14,10 +14,12 @@ const readme = readFileSync(resolve(__dirname, 'readme.md'), 'utf8')
 
 @HomePage.Injectable()
 class MyHomePage extends HomePage {
-  public async state(page: number, type: string, category: number) {
+  public async state(data: { page: number, type: string, category: number, url: string }) {
     return {
       value: 'home',
-      page, type, category,
+      page: data.page,
+      type: data.type,
+      category: data.category,
     }
   }
 
@@ -28,10 +30,11 @@ class MyHomePage extends HomePage {
 
 @DetailPgae.Injectable()
 class MyDetailPgae extends DetailPgae {
-  public state(page: number, token: string) {
+  public state(data: { page: number, token: string }) {
     return {
       value: 'detail',
-      page, token
+      page: data.page,
+      token: data.token,
     }
   }
 
@@ -42,10 +45,10 @@ class MyDetailPgae extends DetailPgae {
 
 @ArchivePage.Injectable()
 class MyArchivePage extends ArchivePage {
-  public state(page: number) {
+  public state(data: { page: number }) {
     return {
       value: 'archive',
-      page
+      page: data.page
     }
   }
 

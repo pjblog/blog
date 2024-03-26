@@ -40,6 +40,7 @@ export default class extends Controller {
 
   public async main(
     @Me me: BlogUserEntity,
+    @Controller.Context(ctx => ctx.url) url: string,
     @Controller.Store context: Context,
     @Controller.Query('page', TransformStringToNumber(1)) page: number
   ) {
@@ -47,7 +48,7 @@ export default class extends Controller {
     if (!Theme.has('archive')) throw new Exception(400, '缺少主题文件');
     context.addCache('me', createMeValue(me));
     const theme = await this.$use(Theme.get('archive') as Newable<ArchivePage>);
-    const state = await Promise.resolve(theme.state(page));
+    const state = await Promise.resolve(theme.state({ page, url }));
     return new Response()
       .setData(await Promise.resolve(theme.render(state)))
       .setType('.html')

@@ -23,7 +23,7 @@ import { CategoryCache } from "../../../caches/category.cache";
 
 @Controller.Injectable()
 @Controller.Method('POST')
-@Controller.Middleware(JSONErrorCatch, HttpBodyMiddleware, DataBaseMiddleware(), UserAdminableMiddleware)
+@Controller.Middleware(JSONErrorCatch, HttpBodyMiddleware, DataBaseMiddleware(true), UserAdminableMiddleware)
 @Swagger.Definition(SwaggerWithCategory, path => {
   path
     .summary('更新分类排序')

@@ -15,6 +15,10 @@ import { Stream } from 'node:stream';
 
 @Service.Injectable()
 export abstract class DetailPgae<T extends object = object> extends Service {
-  public abstract state(page: number, token: string): T | Promise<T>;
+  public abstract state(data: {
+    page: number,
+    token: string,
+    url: string
+  }): T | Promise<T>;
   public abstract render(data: T): string | Stream | Promise<string | Stream>;
 }

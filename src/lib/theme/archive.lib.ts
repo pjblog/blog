@@ -15,6 +15,9 @@ import { Stream } from 'node:stream';
 
 @Service.Injectable()
 export abstract class ArchivePage<T extends object = object> extends Service {
-  public abstract state(page: number): T | Promise<T>;
+  public abstract state(data: {
+    page: number,
+    url: string,
+  }): T | Promise<T>;
   public abstract render(data: T): string | Stream | Promise<string | Stream>;
 }
