@@ -201,8 +201,6 @@ export class MediaService extends Service {
     category?: number,
   } = {}) {
     const sql = this.getRepository().createQueryBuilder('m');
-    sql.leftJoin(BlogCategoryEntity, 'c', 'c.id=m.media_category');
-    sql.leftJoin(BlogUserEntity, 'u', 'u.id=m.media_user_id');
 
     if (!options.type) {
       sql.where('m.media_type<>:type', { type: 'page' });
@@ -213,6 +211,11 @@ export class MediaService extends Service {
     if (typeof options.category === 'number' && options.category > 0) {
       sql.andWhere('m.media_category=:category', { category: options.category })
     }
+
+    const total = await sql.clone().getCount();
+
+    sql.leftJoin(BlogCategoryEntity, 'c', 'c.id=m.media_category');
+    sql.leftJoin(BlogUserEntity, 'u', 'u.id=m.media_user_id');
 
     sql.select('m.media_token', 'token');
     sql.addSelect('m.media_title', 'title');
@@ -244,25 +247,28 @@ export class MediaService extends Service {
       gmtc: string,
     }>();
 
-    return raws.map(raw => {
-      return {
-        token: raw.token,
-        title: raw.title,
-        category: raw.category_id ? {
-          id: raw.category_id,
-          name: raw.category_name
-        } : null,
-        description: raw.description,
-        user: {
-          account: raw.user_account,
-          nickname: raw.user_nickname,
-          avatar: raw.user_avatar
-        },
-        readCount: raw.readCount,
-        type: raw.type,
-        gmtc: raw.gmtc,
-      }
-    })
+    return [
+      raws.map(raw => {
+        return {
+          token: raw.token,
+          title: raw.title,
+          category: raw.category_id ? {
+            id: raw.category_id,
+            name: raw.category_name
+          } : null,
+          description: raw.description,
+          user: {
+            account: raw.user_account,
+            nickname: raw.user_nickname,
+            avatar: raw.user_avatar
+          },
+          readCount: raw.readCount,
+          type: raw.type,
+          gmtc: raw.gmtc,
+        }
+      }),
+      total
+    ] as const;
   }
 
   public async latestComments(size: number) {
