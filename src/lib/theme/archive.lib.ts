@@ -10,6 +10,7 @@
 
 'use strict';
 
+import { Context } from '@zille/core';
 import { Service } from '@zille/service';
 import { Stream } from 'node:stream';
 
@@ -18,6 +19,6 @@ export abstract class ArchivePage<T extends object = object> extends Service {
   public abstract state(data: {
     page: number,
     url: string,
-  }): T | Promise<T>;
+  }, context?: Context): T | Promise<T>;
   public abstract render(data: T): string | Stream | Promise<string | Stream>;
 }

@@ -10,6 +10,7 @@
 
 'use strict';
 
+import { Context } from '@zille/core';
 import { Service } from '@zille/service';
 import { Stream } from 'node:stream';
 
@@ -19,6 +20,6 @@ export abstract class DetailPgae<T extends object = object> extends Service {
     page: number,
     token: string,
     url: string
-  }): T | Promise<T>;
+  }, context?: Context): T | Promise<T>;
   public abstract render(data: T): string | Stream | Promise<string | Stream>;
 }

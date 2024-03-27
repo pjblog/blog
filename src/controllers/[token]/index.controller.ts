@@ -52,7 +52,7 @@ export default class extends Controller<'token'> {
     if (!Theme.has('detail')) throw new Exception(400, '缺少主题文件');
     context.addCache('me', createMeValue(me));
     const theme = await this.$use(Theme.get('detail') as Newable<DetailPgae>);
-    const state = await Promise.resolve(theme.state({ page, token, url }));
+    const state = await Promise.resolve(theme.state({ page, token, url }, context));
     return new Response()
       .setData(await Promise.resolve(theme.render(state)))
       .setType('.html')

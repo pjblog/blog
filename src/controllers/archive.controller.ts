@@ -48,7 +48,7 @@ export default class extends Controller {
     if (!Theme.has('archive')) throw new Exception(400, '缺少主题文件');
     context.addCache('me', createMeValue(me));
     const theme = await this.$use(Theme.get('archive') as Newable<ArchivePage>);
-    const state = await Promise.resolve(theme.state({ page, url }));
+    const state = await Promise.resolve(theme.state({ page, url }, context));
     return new Response()
       .setData(await Promise.resolve(theme.render(state)))
       .setType('.html')
