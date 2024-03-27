@@ -20,13 +20,13 @@ import { DataBaseMiddleware } from '../../middlewares/database.mdw';
 import { Exception } from '../../lib/exception';
 import { DetailPgae } from '../../lib/theme/detail.lib';
 import { Next } from 'koa';
-import { Me } from '../../middlewares/user.mdw';
+import { Me, UserLoginInfoMiddleware } from '../../middlewares/user.mdw';
 import { BlogUserEntity } from '../../entities/user.entity';
 import { Context } from '@zille/core';
 
 @Controller.Injectable()
 @Controller.Method('GET')
-@Controller.Middleware(NormalErrorCatch, DataBaseMiddleware())
+@Controller.Middleware(NormalErrorCatch, DataBaseMiddleware(), UserLoginInfoMiddleware)
 @Swagger.Definition(SwaggerWithWebPage, path => {
   path
     .summary('详情页')
@@ -44,7 +44,7 @@ export default class extends Controller<'token'> {
     @Controller.Context(ctx => ctx.url) url: string,
     @Controller.Store context: Context,
     @Controller.Query('page', TransformStringToNumber(1)) page: number,
-    @Controller.Query('token') token: string,
+    @Controller.Param('token') token: string,
     @Controller.Next next: Next,
   ) {
     if (!/^[0-9a-z]{32}$/.test(token)) return await next();
