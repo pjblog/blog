@@ -64,6 +64,37 @@ export class MediaService extends Service {
     return this.getRepository().remove(media);
   }
 
+  public async getMore(id: number) {
+    const sql = this.getRepository().createQueryBuilder('m');
+    sql.leftJoin(BlogCategoryEntity, 'c', 'c.id=m.media_category');
+    sql.leftJoin(BlogUserEntity, 'u', 'u.id=m.media_user_id');
+    sql.where('m.id=:id', { id });
+    sql.select('c.id', 'category_id');
+    sql.addSelect('c.cate_name', 'category_name');
+    sql.addSelect('u.account', 'user_account');
+    sql.addSelect('u.nickname', 'user_nickname');
+    sql.addSelect('u.avatar', 'user_avatar');
+    const raws = await sql.getRawMany<{
+      category_id: number,
+      category_name: string,
+      user_account: string,
+      user_nickname: string,
+      user_avatar: string,
+    }>();
+
+    return {
+      category: {
+        id: raws[0].category_id,
+        name: raws[0].category_name
+      },
+      user: {
+        account: raws[0].user_account,
+        nickname: raws[0].user_nickname,
+        avatar: raws[0].user_avatar,
+      }
+    }
+  }
+
   public total() {
     return this.getRepository().count();
   }
