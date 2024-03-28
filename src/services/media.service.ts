@@ -232,9 +232,9 @@ export class MediaService extends Service {
     type?: string,
     category?: number,
     date?: {
-      year: string,
-      month?: string,
-      day?: string,
+      year: number,
+      month?: number,
+      day?: number,
     }
   } = {}) {
     const sql = this.getRepository().createQueryBuilder('m');
@@ -247,7 +247,7 @@ export class MediaService extends Service {
 
     if (options.date) {
       const formats: string[] = ['%Y'];
-      const dates: string[] = [options.date.year];
+      const dates: number[] = [options.date.year];
       const _formats: string[] = ['YYYY'];
 
       if (options.date.month) {
