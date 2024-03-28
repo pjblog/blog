@@ -19,13 +19,13 @@ import { TransformStringToNumber, createMeValue } from '../../../utils';
 import { DataBaseMiddleware } from '../../../middlewares/database.mdw';
 import { Exception } from '../../../lib/exception';
 import { ArchivePage } from '../../../lib/theme/archive.lib';
-import { Me } from '../../../middlewares/user.mdw';
+import { Me, UserLoginInfoMiddleware } from '../../../middlewares/user.mdw';
 import { BlogUserEntity } from '../../../entities/user.entity';
 import { Context } from '@zille/core';
 
 @Controller.Injectable()
 @Controller.Method('GET')
-@Controller.Middleware(NormalErrorCatch, DataBaseMiddleware())
+@Controller.Middleware(NormalErrorCatch, DataBaseMiddleware(), UserLoginInfoMiddleware)
 @Swagger.Definition(SwaggerWithWebPage, path => {
   path
     .summary('归档 - 年')
