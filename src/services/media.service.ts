@@ -18,6 +18,7 @@ import { FindOptionsWhere, Not, Equal, LessThan, MoreThan } from "typeorm";
 import { BlogMediaCommentEntity } from "../entities/media.comment.entity";
 import { BlogUserEntity } from "../entities/user.entity";
 import { BlogCategoryEntity } from "../entities/category.entity";
+import dayjs from "dayjs";
 
 interface LatestCommentRaw {
   id: string,
@@ -230,6 +231,11 @@ export class MediaService extends Service {
   public async getMany(page: number, size: number, options: {
     type?: string,
     category?: number,
+    date?: {
+      year: string,
+      month?: string,
+      day?: string,
+    }
   } = {}) {
     const sql = this.getRepository().createQueryBuilder('m');
 
@@ -237,6 +243,28 @@ export class MediaService extends Service {
       sql.where('m.media_type<>:type', { type: 'page' });
     } else {
       sql.where('m.media_type=:type', { type: options.type });
+    }
+
+    if (options.date) {
+      const formats: string[] = ['%Y'];
+      const dates: string[] = [options.date.year];
+      const _formats: string[] = ['YYYY'];
+
+      if (options.date.month) {
+        formats.push('%m');
+        dates.push(options.date.month);
+        _formats.push('MM');
+      }
+
+      if (options.date.day) {
+        formats.push('%d');
+        dates.push(options.date.day);
+        _formats.push('DD');
+      }
+
+      sql.andWhere(`DATE_FORMAT(m.gmt_create, '${formats.join('-')}')=:date`, {
+        date: dayjs(dates.join('-')).format(_formats.join('-')),
+      })
     }
 
     if (typeof options.category === 'number' && options.category > 0) {
@@ -331,5 +359,34 @@ export class MediaService extends Service {
         }
       }
     })
+  }
+
+  public async getArchiveList(type?: string) {
+    const sql = this.getRepository().createQueryBuilder('m');
+    sql.where('m.media_category>0');
+    if (type) {
+      sql.andWhere('m.media_type=:type', { type });
+    } else {
+      sql.andWhere('m.media_type<>:type', { type: 'page' });
+    }
+    sql.select('YEAR(m.gmt_create)', 'year');
+    sql.addSelect('MONTH(m.gmt_create)', 'month');
+    sql.addSelect('COUNT(1)', 'count');
+    sql.groupBy('year');
+    sql.addGroupBy('month');
+    sql.orderBy({
+      year: 'DESC',
+      month: 'DESC',
+    })
+    const res = await sql.getRawMany<{
+      year: string,
+      month: string,
+      count: number
+    }>();
+    return res.map(({ year, month, count }) => ({
+      year: Number(year),
+      month: Number(month),
+      count: Number(count)
+    }))
   }
 }
