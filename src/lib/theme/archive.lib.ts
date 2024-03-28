@@ -18,6 +18,8 @@ import { Stream } from 'node:stream';
 export abstract class ArchivePage<T extends object = object> extends Service {
   public abstract state(data: {
     page: number,
+    type: string,
+    category: number,
     url: string,
     year?: number,
     month?: number,
