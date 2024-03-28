@@ -19,6 +19,9 @@ export abstract class ArchivePage<T extends object = object> extends Service {
   public abstract state(data: {
     page: number,
     url: string,
+    year?: number,
+    month?: number,
+    day?: number,
   }, context?: Context): T | Promise<T>;
   public abstract render(data: T): string | Stream | Promise<string | Stream>;
 }

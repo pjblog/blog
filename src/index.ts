@@ -96,11 +96,6 @@ export * from './services/user.service';
 export * from './utils';
 export * from './global.types';
 
-// controllers
-export { default as HomeController } from './controllers/index.controller';
-export { default as ArchiveController } from './controllers/archive.controller';
-export { default as DetailController } from './controllers/[token]/index.controller';
-
 // main code
 const __dirname = fileURLToPath(new URL('.', import.meta.url));
 const controllers = resolve(__dirname, 'controllers');
