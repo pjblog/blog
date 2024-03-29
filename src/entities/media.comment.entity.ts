@@ -48,6 +48,13 @@ export class BlogMediaCommentEntity {
   })
   public parent_id: number;
 
+  @Column({
+    type: 'integer',
+    comment: '子评论数',
+    default: 0,
+  })
+  public child_count: number;
+
   @Index('gmtc-idx')
   @Column({
     type: 'timestamp',
@@ -75,6 +82,12 @@ export class BlogMediaCommentEntity {
 
   public updateContent(content: string) {
     this.content = content;
+    this.gmt_modified = new Date();
+    return this;
+  }
+
+  public updateChildCount(i: number) {
+    this.child_count = this.child_count + i;
     this.gmt_modified = new Date();
     return this;
   }

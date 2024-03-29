@@ -24,7 +24,7 @@ import { BlogUserEntity } from "../../../../../../entities/user.entity";
 
 @Controller.Injectable()
 @Controller.Method('DELETE')
-@Controller.Middleware(JSONErrorCatch, HttpBodyMiddleware, DataBaseMiddleware(), UserHasLoginMiddleware, MediaMiddleware())
+@Controller.Middleware(JSONErrorCatch, HttpBodyMiddleware, DataBaseMiddleware(true), UserHasLoginMiddleware, MediaMiddleware())
 @Swagger.Definition(SwaggerWithComment, path => {
   path
     .summary('删除评论')
@@ -47,6 +47,11 @@ export class DeleteMediaCommentsController extends Controller<'token' | 'id'> {
     const comment = await this.comment.getOneById(id);
     if (!comment) throw new Exception(804, '评论不存在');
     if (comment.user_id !== me.id) throw new Exception(802, '不允许操作此评论');
+    if (comment.parent_id) {
+      const _comment = await this.comment.getOneById(comment.parent_id);
+      if (!_comment) throw new Exception(804, '父评论不存在');
+      await this.comment.save(_comment.updateChildCount(-1));
+    }
     await this.comment.del();
     return Response.json(Date.now());
   }

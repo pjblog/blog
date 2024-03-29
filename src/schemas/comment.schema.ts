@@ -18,6 +18,7 @@ export const CommentSchema = new Schema.Object()
   .set('content', new Schema.String().description('评论内容'))
   .set('gmtc', new Schema.String().description('创建时间'))
   .set('gmtm', new Schema.String().description('修改时间'))
+  .set('children', new Schema.Number().description('子评论数'))
   .set('user',
     new Schema.Object()
       .description('发布者信息')

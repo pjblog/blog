@@ -26,6 +26,7 @@ interface RawComment {
   content: string,
   gmtc: string | Date,
   gmtm: string | Date,
+  children: number,
 }
 
 interface RowComment {
@@ -33,6 +34,7 @@ interface RowComment {
   content: string,
   gmtc: string | Date,
   gmtm: string | Date,
+  children: number,
   user: {
     nickname: string,
     avatar: string,
@@ -56,7 +58,7 @@ export class MediaCommentService extends Service {
   }
 
   public add(user: number, content: string, parent: number = 0) {
-    return this.save(this.getRepository().create().add(this.media.id, user, content))
+    return this.save(this.getRepository().create().add(this.media.id, user, content, parent));
   }
 
   public del() {
@@ -96,6 +98,7 @@ export class MediaCommentService extends Service {
     sql.addSelect('c.content', 'content');
     sql.addSelect('c.gmt_create', 'gmtc');
     sql.addSelect('c.gmt_modified', 'gmtm');
+    sql.addSelect('c.child_count', 'children');
 
     sql.orderBy('c.gmt_create', 'DESC');
     sql.offset((page - 1) * size);
@@ -107,6 +110,7 @@ export class MediaCommentService extends Service {
       content: raw.content,
       gmtc: raw.gmtc,
       gmtm: raw.gmtm,
+      children: raw.children,
       user: {
         nickname: raw.nickname,
         avatar: raw.avatar

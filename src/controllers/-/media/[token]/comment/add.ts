@@ -25,10 +25,11 @@ import { BlogUserEntity } from "../../../../../entities/user.entity";
 import { Media } from "../../../../../applications/media.app";
 import { BlogMediaEntity } from "../../../../../entities/media.entity";
 import { CommentSchema } from "../../../../../schemas/comment.schema";
+import { BlogMediaCommentEntity } from "../../../../../entities/media.comment.entity";
 
 @Controller.Injectable()
 @Controller.Method('PUT')
-@Controller.Middleware(JSONErrorCatch, HttpBodyMiddleware, DataBaseMiddleware(), UserHasLoginMiddleware, MediaMiddleware())
+@Controller.Middleware(JSONErrorCatch, HttpBodyMiddleware, DataBaseMiddleware(true), UserHasLoginMiddleware, MediaMiddleware())
 @Swagger.Definition(SwaggerWithComment, path => {
   path
     .summary('发表评论')
@@ -59,12 +60,21 @@ export class AddMediaCommentsController extends Controller<'token'> {
     if (!this.configs.get('mediaCommentable') || !media.commentable) {
       throw new Exception(801, '不允许评论');
     }
+    let _comment: BlogMediaCommentEntity;
+    if (body.parent) {
+      _comment = await this.comment.getOneById(body.parent);
+      if (!_comment) throw new Exception(804, '找不到父评论');
+    }
     const comment = await this.comment.add(me.id, body.content, body.parent);
+    if (_comment) {
+      await this.comment.save(_comment.updateChildCount(1));
+    }
     return Response.json({
       id: comment.id,
       content: comment.content,
       gmtc: comment.gmt_create,
       gmtm: comment.gmt_modified,
+      children: comment.child_count,
       user: {
         nickname: me.nickname,
         avatar: me.avatar,
