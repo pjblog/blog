@@ -77,15 +77,27 @@ export class MediaCommentService extends Service {
     })
   }
 
-  public delOneById(id: number) {
-    return this.getRepository().delete({
+  public async delOneById(id: number) {
+    const repo = this.getRepository();
+    const children = await repo.findBy({
+      media_id: this.media.id,
+      parent_id: id
+    })
+    await Promise.all(children.map(child => this.delOneById(child.id)));
+    await repo.delete({
       media_id: this.media.id,
       id,
     })
   }
 
-  public delOne(comment: BlogMediaCommentEntity) {
-    return this.getRepository().remove(comment);
+  public async delOne(comment: BlogMediaCommentEntity) {
+    const repo = this.getRepository();
+    const children = await repo.findBy({
+      media_id: this.media.id,
+      parent_id: comment.id,
+    })
+    await Promise.all(children.map(child => this.delOne(child)));
+    await repo.remove(comment);
   }
 
   public async getMany(page: number, size: number, parent_id: number = 0) {
