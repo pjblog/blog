@@ -22,6 +22,7 @@ interface RawComment {
   id: number,
   uid: number,
   nickname: string,
+  account: string,
   avatar: string,
   content: string,
   gmtc: string | Date,
@@ -38,6 +39,7 @@ interface RowComment {
   user: {
     nickname: string,
     avatar: string,
+    account: string,
   }
 }
 
@@ -94,6 +96,7 @@ export class MediaCommentService extends Service {
 
     sql.select('c.id', 'id');
     sql.addSelect('u.nickname', 'nickname');
+    sql.addSelect('u.account', 'account');
     sql.addSelect('u.avatar', 'avatar');
     sql.addSelect('c.content', 'content');
     sql.addSelect('c.gmt_create', 'gmtc');
@@ -113,7 +116,8 @@ export class MediaCommentService extends Service {
       children: raw.children,
       user: {
         nickname: raw.nickname,
-        avatar: raw.avatar
+        avatar: raw.avatar,
+        account: raw.account,
       }
     }))
 
