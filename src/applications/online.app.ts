@@ -18,7 +18,10 @@ export class Online extends Application {
   public readonly stacks = new Set<string>();
   public readonly event = mitt();
   public setup() {
-
+    return () => {
+      this.stacks.clear();
+      this.event.off('*');
+    }
   }
 
   get size() {
