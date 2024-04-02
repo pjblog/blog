@@ -47,6 +47,6 @@ export default class extends Controller {
     ctx.req.on('close', close);
     ctx.req.on('end', close);
     ctx.status = 200;
-    return Response.null();
+    // return Response.null();
   }
 }
