@@ -21,10 +21,6 @@ import { Online } from '../../applications/online.app';
 import { Me, UserLoginInfoMiddleware } from '../../middlewares/user.mdw';
 import { BlogUserEntity } from '../../entities/user.entity';
 
-const res = {
-  value: 0
-}
-
 @Controller.Injectable()
 @Controller.Method('GET')
 @Controller.Middleware(NormalErrorCatch, SessionMiddleware, UserLoginInfoMiddleware, createSSEMiddleware())
@@ -65,13 +61,16 @@ export default class extends Controller {
     this.Online.event.on('change', handler);
 
     const close = () => {
-      res.value--;
+      closed = true;
+      if (me?.account) {
+        this.Online.del('user:' + me.account);
+      } else {
+        this.Online.del('token:' + token);
+      }
       clearInterval(timer);
       this.Online.event.off('change', handler);
-      closed = true;
       ctx.sse.end();
     }
     ctx.req.on('close', close);
-    ctx.req.on('end', close);
   }
 }
