@@ -48,6 +48,9 @@ export const createSSEMiddleware = (options: IKoaSSEOptions = defaultOptions) =>
 
     await next();
 
+    ctx.status = 200;
+    ctx.body = ctx.sse;
+
     // if (!ctx.body) {
     //   // Set response to sse stream if no body
     //   ctx.body = ctx.sse;

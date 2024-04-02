@@ -60,7 +60,7 @@ export default class extends Controller<'token'> {
     const theme = await this.$use(Theme.get('detail') as Newable<DetailPgae>);
     const state = await Promise.resolve(theme.state({ page, token, url }, context));
 
-    if (me.account) {
+    if (me?.account) {
       this.MediaReadCounter.replace(token, sess, me.account);
       this.MediaReadCounter.add(token, me.account);
     } else {

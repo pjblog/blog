@@ -51,6 +51,7 @@ export * from './applications/media.app';
 export * from './applications/theme.app';
 export * from './applications/variable.app';
 export * from './applications/readcount.app';
+export * from './applications/online.app';
 
 export * from './entities/attachment.entity';
 export * from './entities/category.entity';
