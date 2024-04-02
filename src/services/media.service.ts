@@ -290,7 +290,7 @@ export class MediaService extends Service {
     sql.addSelect('m.gmt_create', 'gmtc');
     sql.addSelect('COUNT(t.media_id)', 'comments');
 
-    sql.groupBy('t.media_id');
+    sql.groupBy('m.id');
     sql.orderBy('m.gmt_create', 'DESC');
     sql.offset((page - 1) * size);
     sql.limit(size);
