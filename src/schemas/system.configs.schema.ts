@@ -114,10 +114,10 @@ export const SystemConfigsSchema = new Schema.Object()
       .description('用户登录有效期 单位：天，系统将保持 N 天无需登录')
       .required()
   )
-  .set('onlineExpire',
+  .set('onlineRefreshExpire',
     new Schema.Number(3)
-      .title('Session 过期时间')
-      .description('单位：分钟。如果用户 N 分钟后没有访问本站，session 过期')
+      .title('在线人数刷新时间')
+      .description('单位：秒')
       .required()
   )
   .set('sessionMaxAge',

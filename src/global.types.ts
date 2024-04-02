@@ -71,7 +71,7 @@ export interface SystemConfigs {
   swagger: boolean,
   registable: boolean,
   loginExpire: number,
-  onlineExpire: number,
+  onlineRefreshExpire: number,
   sessionMaxAge: number,
   mediaQueryWithPageSize: number,
   mediaLatestWithSize: number,

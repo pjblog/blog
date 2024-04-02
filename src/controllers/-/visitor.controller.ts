@@ -20,6 +20,7 @@ import { Context } from 'koa';
 import { Online } from '../../applications/online.app';
 import { Me, UserLoginInfoMiddleware } from '../../middlewares/user.mdw';
 import { BlogUserEntity } from '../../entities/user.entity';
+import { BlogVariable } from '../../applications/variable.app';
 
 @Controller.Injectable()
 @Controller.Method('GET')
@@ -35,6 +36,9 @@ import { BlogUserEntity } from '../../entities/user.entity';
 export default class extends Controller {
   @Controller.Inject(Online)
   private readonly Online: Online;
+
+  @Controller.Inject(BlogVariable)
+  private readonly configs: BlogVariable;
 
   public async main(
     @Controller.Context(ctx => ctx) ctx: Context,
@@ -52,7 +56,8 @@ export default class extends Controller {
       online: this.Online.size,
       list: this.Online.list,
     }));
-    const timer = setInterval(send, 3000).unref();
+    const refreshExpire = this.configs.get('onlineRefreshExpire');
+    const timer = setInterval(send, refreshExpire * 1000).unref();
     const handler = () => {
       clearInterval(timer);
       if (!closed) send();
