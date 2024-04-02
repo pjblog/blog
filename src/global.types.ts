@@ -81,6 +81,7 @@ export interface SystemConfigs {
   mediaCommentWithPageSize: number,
   mediaRelativeWithPageSize: number,
   mediaCommentWithChildrenPageSize: number,
+  mediaReadCountExpire: number,
 }
 
 export interface LoginsProps {

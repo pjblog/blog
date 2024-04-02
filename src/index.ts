@@ -39,6 +39,7 @@ import { Plugin } from './lib/plugin.lib';
 import { Storage } from './applications/cache/cache.app';
 import { BlogVariable } from './applications/variable.app';
 import { Plugins } from './applications/plugin.app';
+import { MediaReadCounter } from './applications/readcount.app';
 
 // exports
 export * from './applications/database.app';
@@ -49,6 +50,7 @@ export * from './applications/logins.app';
 export * from './applications/media.app';
 export * from './applications/theme.app';
 export * from './applications/variable.app';
+export * from './applications/readcount.app';
 
 export * from './entities/attachment.entity';
 export * from './entities/category.entity';
@@ -171,6 +173,9 @@ class Blog extends Application {
      * 全局变量
      */
     await this.$use(BlogVariable);
+
+    // 文章计数器
+    await this.$use(MediaReadCounter);
 
     // middleware for desktop
     this.Middlewares.add('prefix', Desktop);

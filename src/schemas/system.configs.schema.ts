@@ -126,8 +126,12 @@ export const SystemConfigsSchema = new Schema.Object()
       .description('单位：天。N 天不过期')
       .required()
   )
-
-
+  .set('mediaReadCountExpire',
+    new Schema.Number(24)
+      .title('媒体阅读量用户记录有效期')
+      .description('单位：小时。N 天不过期')
+      .required()
+  )
   .set('mediaQueryWithPageSize',
     new Schema.Number(10)
       .title('媒体列表分页大小')

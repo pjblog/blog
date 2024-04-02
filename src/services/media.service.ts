@@ -275,6 +275,7 @@ export class MediaService extends Service {
 
     sql.leftJoin(BlogCategoryEntity, 'c', 'c.id=m.media_category');
     sql.leftJoin(BlogUserEntity, 'u', 'u.id=m.media_user_id');
+    sql.leftJoin(BlogMediaCommentEntity, 't', 't.media_id=m.id')
 
     sql.select('m.media_token', 'token');
     sql.addSelect('m.media_title', 'title');
@@ -287,6 +288,7 @@ export class MediaService extends Service {
     sql.addSelect('m.media_read_count', 'readCount');
     sql.addSelect('m.media_type', 'type');
     sql.addSelect('m.gmt_create', 'gmtc');
+    sql.addSelect('COUNT(t.media_id)', 'comments');
 
     sql.orderBy('m.gmt_create', 'DESC');
     sql.offset((page - 1) * size);
@@ -304,6 +306,7 @@ export class MediaService extends Service {
       readCount: number,
       type: string,
       gmtc: string,
+      comments: number,
     }>();
 
     return [
@@ -322,6 +325,7 @@ export class MediaService extends Service {
             avatar: raw.user_avatar
           },
           readCount: raw.readCount,
+          comments: Number(raw.comments),
           type: raw.type,
           gmtc: raw.gmtc,
         }

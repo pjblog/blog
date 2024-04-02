@@ -22,10 +22,11 @@ import { HomePage } from '../lib/theme/home.lib';
 import { Me, UserLoginInfoMiddleware } from '../middlewares/user.mdw';
 import { BlogUserEntity } from '../entities/user.entity';
 import { Context } from '@zille/core';
+import { SessionMiddleware } from '../middlewares/session.mdw';
 
 @Controller.Injectable()
 @Controller.Method('GET')
-@Controller.Middleware(NormalErrorCatch, DataBaseMiddleware(), UserLoginInfoMiddleware)
+@Controller.Middleware(NormalErrorCatch, SessionMiddleware, DataBaseMiddleware(), UserLoginInfoMiddleware)
 @Swagger.Definition(SwaggerWithWebPage, path => {
   path
     .summary('主页')

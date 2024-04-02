@@ -23,10 +23,12 @@ import { Next } from 'koa';
 import { Me, UserLoginInfoMiddleware } from '../../middlewares/user.mdw';
 import { BlogUserEntity } from '../../entities/user.entity';
 import { Context } from '@zille/core';
+import { MediaReadCounter } from '../../applications/readcount.app';
+import { Session, SessionMiddleware } from '../../middlewares/session.mdw';
 
 @Controller.Injectable()
 @Controller.Method('GET')
-@Controller.Middleware(NormalErrorCatch, DataBaseMiddleware(), UserLoginInfoMiddleware)
+@Controller.Middleware(NormalErrorCatch, SessionMiddleware, DataBaseMiddleware(), UserLoginInfoMiddleware)
 @Swagger.Definition(SwaggerWithWebPage, path => {
   path
     .summary('详情页')
@@ -39,8 +41,12 @@ export default class extends Controller<'token'> {
   @Controller.Inject(Themes)
   private readonly themes: Themes;
 
+  @Controller.Inject(MediaReadCounter)
+  private readonly MediaReadCounter: MediaReadCounter;
+
   public async main(
     @Me me: BlogUserEntity,
+    @Session sess: string,
     @Controller.Context(ctx => ctx.url) url: string,
     @Controller.Store context: Context,
     @Controller.Query('page', TransformStringToNumber(1)) page: number,
@@ -53,6 +59,14 @@ export default class extends Controller<'token'> {
     context.addCache('me', createMeValue(me));
     const theme = await this.$use(Theme.get('detail') as Newable<DetailPgae>);
     const state = await Promise.resolve(theme.state({ page, token, url }, context));
+
+    if (me.account) {
+      this.MediaReadCounter.replace(token, sess, me.account);
+      this.MediaReadCounter.add(token, me.account);
+    } else {
+      this.MediaReadCounter.add(token, sess);
+    }
+
     return new Response()
       .setData(await Promise.resolve(theme.render(state)))
       .setType('.html')
