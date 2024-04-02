@@ -26,10 +26,11 @@ import { Media } from "../../../../../applications/media.app";
 import { BlogMediaEntity } from "../../../../../entities/media.entity";
 import { CommentSchema } from "../../../../../schemas/comment.schema";
 import { BlogMediaCommentEntity } from "../../../../../entities/media.comment.entity";
+import { SessionMiddleware } from "../../../../../middlewares/session.mdw";
 
 @Controller.Injectable()
 @Controller.Method('PUT')
-@Controller.Middleware(JSONErrorCatch, HttpBodyMiddleware, DataBaseMiddleware(true), UserHasLoginMiddleware, MediaMiddleware())
+@Controller.Middleware(JSONErrorCatch, SessionMiddleware, HttpBodyMiddleware, DataBaseMiddleware(true), UserHasLoginMiddleware, MediaMiddleware())
 @Swagger.Definition(SwaggerWithComment, path => {
   path
     .summary('发表评论')
