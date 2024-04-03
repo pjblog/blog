@@ -114,7 +114,10 @@ export class Online extends Application {
         const Hour = args[i];
         for (const hour of Hour.values()) {
           for (const [token, { account, timestamp }] of hour.entries()) {
-            await repo.save(repo.create().add(token, timestamp, account));
+            await repo.save(
+              repo.create()
+                .add(token, timestamp, account)
+            );
           }
         }
       }

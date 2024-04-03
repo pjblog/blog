@@ -96,8 +96,12 @@ export class MediaService extends Service {
     }
   }
 
-  public total() {
-    return this.getRepository().count();
+  public total(type?: 'article' | 'page') {
+    const conditions: FindOptionsWhere<BlogMediaEntity> = {};
+    if (type) {
+      conditions.media_type = type;
+    }
+    return this.getRepository().countBy(conditions);
   }
 
   public async readCount() {

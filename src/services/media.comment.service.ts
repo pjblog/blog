@@ -57,6 +57,10 @@ export class MediaCommentService extends Service {
     return this.conn.manager.getRepository(BlogMediaCommentEntity);
   }
 
+  public total() {
+    return this.getRepository().count();
+  }
+
   public save(target: BlogMediaCommentEntity) {
     return this.getRepository().save(target);
   }

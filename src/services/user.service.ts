@@ -45,10 +45,18 @@ export class UserService extends Service {
     return this.conn.manager.getRepository(BlogUserEntity);
   }
 
-  public total() {
-    return this.getRepository().countBy({
-      forbiden: false,
-    });
+  public total(options: {
+    forbiden?: true,
+    admin?: true,
+  } = {}) {
+    const conditions: FindOptionsWhere<BlogUserEntity> = {}
+    if (options.forbiden) {
+      conditions.forbiden = true;
+    }
+    if (options.admin) {
+      conditions.admin = true;
+    }
+    return this.getRepository().countBy(conditions);
   }
 
   public save(target: BlogUserEntity) {

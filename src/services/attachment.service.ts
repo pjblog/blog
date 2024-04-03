@@ -25,6 +25,14 @@ export class AttachmentService extends Service {
     return this.conn.manager.getRepository(BlogAttachmentEntity);
   }
 
+  public total(image?: true) {
+    const conditions: FindOptionsWhere<BlogAttachmentEntity> = {};
+    if (image) {
+      conditions.is_image = true;
+    }
+    return this.getRepository().countBy(conditions);
+  }
+
   public save(target: BlogAttachmentEntity) {
     return this.getRepository().save(target);
   }
