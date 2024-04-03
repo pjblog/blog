@@ -20,11 +20,10 @@ import { MediaCommentService } from "../../../../../services/media.comment.servi
 import { Swagger, SwaggerWithComment, createApiSchema } from "../../../../../lib/swagger/swagger";
 import { Schema } from "../../../../../lib/schema/schema.lib";
 import { CommentSchema } from "../../../../../schemas/comment.schema";
-import { SessionMiddleware } from "../../../../../middlewares/session.mdw";
 
 @Controller.Injectable()
 @Controller.Method('GET')
-@Controller.Middleware(JSONErrorCatch, SessionMiddleware, DataBaseMiddleware(), MediaMiddleware())
+@Controller.Middleware(JSONErrorCatch, DataBaseMiddleware(), MediaMiddleware())
 @Swagger.Definition(SwaggerWithComment, path => {
   path
     .summary('获取评论')

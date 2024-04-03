@@ -10,7 +10,7 @@
 
 'use strict';
 
-import { Controller, Response } from '@zille/http-controller';
+import { Controller } from '@zille/http-controller';
 import { Swagger, SwaggerWithGlobal } from '../../lib/swagger/swagger';
 import { Schema } from '../../lib/schema/schema.lib';
 import { NormalErrorCatch } from '../../middlewares/catch.mdw';

@@ -32,6 +32,7 @@ import { BlogMediaArticleEntity } from './entities/media.article.entity';
 import { BlogMediaTagEntity } from './entities/media.tag.entity';
 import { BlogAttachmentEntity } from './entities/attachment.entity';
 import { BlogMediaCommentEntity } from './entities/media.comment.entity';
+import { BlogVisitorEntity } from './entities/visitor.entity';
 
 import { DataBase } from './applications/database.app';
 import { Logger } from './applications/logger.app';
@@ -40,6 +41,7 @@ import { Storage } from './applications/cache/cache.app';
 import { BlogVariable } from './applications/variable.app';
 import { Plugins } from './applications/plugin.app';
 import { MediaReadCounter } from './applications/readcount.app';
+import { Online } from './applications/online.app';
 
 // exports
 export * from './applications/database.app';
@@ -60,6 +62,7 @@ export * from './entities/media.comment.entity';
 export * from './entities/media.entity';
 export * from './entities/media.tag.entity';
 export * from './entities/user.entity';
+export * from './entities/visitor.entity';
 
 export * from './middlewares/catch.mdw';
 export * from './middlewares/database.mdw';
@@ -128,9 +131,7 @@ class Blog extends Application {
   private readonly plugins: Plugins;
 
   public async initialize(options: BlogProps, plugins: Newable<Plugin>[]) {
-    /**
-     * plugins setup
-     */
+    // 插件安装
     const directories = new Map<string, string>();
     const _plugins: Plugin[] = [];
     for (let i = 0; i < plugins.length; i++) {
@@ -144,16 +145,12 @@ class Blog extends Application {
       }
     }
 
-    /**
-     * Redis setup
-     */
+    // Redis插件启动
     this.Configs.set(Storage.namespace, options.cache);
     this.Configs.set(IORedis.namespace, options.redis);
     await this.$use(Storage);
 
-    /**
-     * Database setup
-     */
+    // 数据库插件启动
     this.Configs.set(TypeORM.namespace, {
       ...options.database,
       entities: [
@@ -164,6 +161,7 @@ class Blog extends Application {
         BlogMediaTagEntity,
         BlogAttachmentEntity,
         BlogMediaCommentEntity,
+        BlogVisitorEntity,
         ...Array.from(this.DataBase.entities.values()),
       ],
       synchronize: true,
@@ -171,21 +169,22 @@ class Blog extends Application {
     });
     await this.$use(TypeORM);
 
-    /**
-     * 全局变量
-     */
+    // 全局变量
     await this.$use(BlogVariable);
 
     // 文章计数器
     await this.$use(MediaReadCounter);
 
-    // middleware for desktop
+    // 在线计数器
+    await this.$use(Online);
+
+    // 后台管理系统中间件
     this.Middlewares.add('prefix', Desktop);
+
+    // 高级插件静态文件中间件
     this.Middlewares.add('suffix', this.plugins.createAdvanceServeStaticMiddleware());
 
-    /**
-     * Http setup
-     */
+    // Http 服务启动
     this.Configs.set(Http.namespace, options.http);
     const http = await this.$use(Http);
     this.Logger.http('http://127.0.0.1:' + options.http.port);
@@ -198,7 +197,7 @@ class Blog extends Application {
       this.Logger.debug(`+ Plugin controllers -> \`${directory}\``);
     }
 
-    // plugin setup
+    // 插件初始化
     for (let i = 0; i < _plugins.length; i++) {
       const plugin = _plugins[i];
       await plugin.initConfigs();
@@ -215,6 +214,7 @@ class Blog extends Application {
   public setup() { }
 }
 
+// 博客程序启动函数
 export default (options: BlogProps, plugins: Newable<Plugin>[] = []) => {
   container.connect(Blog).then(blog => {
     exitHook(exit => container.destroy(Blog).finally(exit));

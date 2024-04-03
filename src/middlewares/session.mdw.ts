@@ -1,8 +1,21 @@
+/**
+ * Copyright (c) PJBlog Platforms, net. and affiliates.
+ *
+ * This source code is licensed under the MIT license found in the
+ * LICENSE file in the root directory of this source tree.
+ *
+ * @Author evio<evio@vip.qq.com>
+ * @Website https://www.pjhome.net
+ */
+
+'use strict';
+
 import pkg from 'crypto-js';
 import { Context, Next } from "koa";
 import { container } from '@zille/application';
 import { BlogVariable } from '../applications/variable.app';
 import { Controller } from '@zille/http-controller';
+import { Online } from '../applications/online.app';
 const { MD5 } = pkg;
 
 declare module 'koa' {
@@ -22,6 +35,9 @@ export async function SessionMiddleware(ctx: Context, next: Next) {
   const domain = new URL(configs.get('domain'));
 
   ctx.session = token;
+
+  const online = await container.connect(Online);
+  online.addVisitor(token, ctx.user?.account);
 
   await next();
 

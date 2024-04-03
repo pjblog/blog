@@ -28,7 +28,7 @@ import { Session, SessionMiddleware } from '../../middlewares/session.mdw';
 
 @Controller.Injectable()
 @Controller.Method('GET')
-@Controller.Middleware(NormalErrorCatch, SessionMiddleware, DataBaseMiddleware(), UserLoginInfoMiddleware)
+@Controller.Middleware(NormalErrorCatch, DataBaseMiddleware(), UserLoginInfoMiddleware, SessionMiddleware)
 @Swagger.Definition(SwaggerWithWebPage, path => {
   path
     .summary('详情页')

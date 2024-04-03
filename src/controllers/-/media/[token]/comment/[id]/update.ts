@@ -21,11 +21,10 @@ import { HttpBodyMiddleware } from "../../../../../../middlewares/http.body.mdw"
 import { Me, UserHasLoginMiddleware } from "../../../../../../middlewares/user.mdw";
 import { Exception } from "../../../../../../lib/exception";
 import { BlogUserEntity } from "../../../../../../entities/user.entity";
-import { SessionMiddleware } from "../../../../../../middlewares/session.mdw";
 
 @Controller.Injectable()
 @Controller.Method('POST')
-@Controller.Middleware(JSONErrorCatch, SessionMiddleware, HttpBodyMiddleware, DataBaseMiddleware(), UserHasLoginMiddleware, MediaMiddleware())
+@Controller.Middleware(JSONErrorCatch, HttpBodyMiddleware, DataBaseMiddleware(), UserHasLoginMiddleware, MediaMiddleware())
 @Swagger.Definition(SwaggerWithComment, path => {
   path
     .summary('更新评论')

@@ -38,6 +38,7 @@ export class GetCategoriesController extends Controller {
   private readonly category: CategoryService;
 
   public async main() {
-    return Response.json(await this.category.getMany())
+    const data = await this.category.getMany();
+    return Response.json(data.sort((a, b) => a.cate_order - b.cate_order))
   }
 }
