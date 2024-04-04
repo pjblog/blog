@@ -20,6 +20,21 @@ export class BlogVisitorEntity {
 
   @Column({
     type: 'varchar',
+    length: 50,
+    comment: 'ip',
+    nullable: false
+  })
+  public ip: string;
+
+  @Column({
+    type: 'text',
+    comment: 'user-agent',
+    nullable: false
+  })
+  public user_agent: string;
+
+  @Column({
+    type: 'varchar',
     length: 100,
     comment: 'token',
     nullable: false
@@ -42,9 +57,11 @@ export class BlogVisitorEntity {
   })
   public gmt_create: Date;
 
-  public add(token: string, timestamp: number, account?: string) {
+  public add(token: string, timestamp: number, ip: string, userAgent: string, account?: string) {
     this.token = token;
     this.account = account;
+    this.ip = ip;
+    this.user_agent = userAgent;
     this.gmt_create = new Date(timestamp);
     return this;
   }

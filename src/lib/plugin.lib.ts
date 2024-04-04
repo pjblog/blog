@@ -17,7 +17,6 @@ import { Variable } from './variable.lib';
 import { Newable } from '@zille/http-controller';
 import { Themes } from '../applications/theme.app';
 import { AcceptWebPageNameSpace } from '../global.types';
-type a = MethodDecorator
 
 @Application.Injectable()
 export abstract class Plugin<T extends object = any> extends Application {

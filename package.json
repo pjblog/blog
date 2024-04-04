@@ -1,6 +1,6 @@
 {
   "name": "@pjblog/blog",
-  "version": "2.3.33",
+  "version": "2.3.34",
   "description": "PJBlog 2004-present 博客主程序工程",
   "license": "MIT",
   "type": "module",

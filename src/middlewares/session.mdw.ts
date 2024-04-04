@@ -37,7 +37,7 @@ export async function SessionMiddleware(ctx: Context, next: Next) {
   ctx.session = token;
 
   const online = await container.connect(Online);
-  online.addVisitor(token, ctx.user?.account);
+  online.addVisitor(token, ctx.ip, ctx.headers['user-agent'], ctx.user?.account);
 
   await next();
 

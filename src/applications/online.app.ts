@@ -20,6 +20,8 @@ import { BlogVisitorEntity } from '../entities/visitor.entity';
 interface IVisitorProps {
   account?: string,
   timestamp: number,
+  ip: string,
+  userAgent: string,
 }
 
 @Application.Injectable()
@@ -35,15 +37,16 @@ export class Online extends Application {
    * 访问记录
    * 1 string 日期
    * 2 number 小时
-   * 3 string token
-   * 4 number 时间戳
+   * 3 string ip
+   * 4 string token
+   * 5 number 时间戳
    */
-  public readonly visitors = new Map<string, Map<number, Map<string, IVisitorProps>>>();
+  public readonly visitors = new Map<string, Map<number, Map<string, Map<string, IVisitorProps>>>>();
   public readonly event = mitt();
   public async setup() {
     const timer = setInterval(() => {
       const day = dayjs().format('YYYY-MM-DD');
-      const resolves: Map<number, Map<string, IVisitorProps>>[] = [];
+      const resolves: Map<number, Map<string, Map<string, IVisitorProps>>>[] = [];
       for (const [key, value] of this.visitors.entries()) {
         if (key !== day) {
           resolves.push(value);
@@ -58,6 +61,11 @@ export class Online extends Application {
       this.stacks.clear();
       this.event.off('*');
     }
+  }
+
+  get current() {
+    const day = dayjs().format('YYYY-MM-DD');
+    return this.visitors.has(day) ? this.visitors.get(day) : null;
   }
 
   get size() {
@@ -84,40 +92,63 @@ export class Online extends Application {
     return this;
   }
 
-  public addVisitor(token: string, account?: string) {
+  /**
+   * 添加访问记录
+   * 路径：日期 -> 小时 -> ip -> token
+   * @param token 
+   * @param ip 
+   * @param userAgent 
+   * @param account 
+   * @returns 
+   */
+  public addVisitor(token: string, ip: string, userAgent: string, account?: string) {
+    if (!ip || !token || !userAgent) return;
+
     const now = Date.now();
     const day = dayjs(now);
     const year = day.format('YYYY-MM-DD');
     const hour = Number(day.format('HH'));
+
     if (!this.visitors.has(year)) {
       this.visitors.set(year, new Map())
     }
+
     const Year = this.visitors.get(year);
     if (!Year.has(hour)) {
       Year.set(hour, new Map());
     }
+
     const Hour = Year.get(hour);
-    if (!Hour.has(token)) {
-      Hour.set(token, {
+    if (!Hour.has(ip)) {
+      Hour.set(ip, new Map());
+    }
+
+    const IP = Hour.get(ip);
+    if (!IP.has(token)) {
+      IP.set(token, {
         account,
         timestamp: now,
+        ip,
+        userAgent,
       });
     }
+
     return this;
   }
 
-  public async save(...args: Map<number, Map<string, IVisitorProps>>[]) {
+  public async save(...args: Map<number, Map<string, Map<string, IVisitorProps>>>[]) {
     if (!args.length) return;
     return this.database.connection.transaction(async runner => {
       const repo = runner.getRepository(BlogVisitorEntity);
       for (let i = 0; i < args.length; i++) {
-        const Hour = args[i];
-        for (const hour of Hour.values()) {
-          for (const [token, { account, timestamp }] of hour.entries()) {
-            await repo.save(
-              repo.create()
-                .add(token, timestamp, account)
-            );
+        for (const hour of args[i].values()) {
+          for (const IP of hour.values()) {
+            for (const [token, { account, timestamp, ip, userAgent }] of IP.entries()) {
+              await repo.save(
+                repo.create()
+                  .add(token, timestamp, ip, userAgent, account)
+              );
+            }
           }
         }
       }
