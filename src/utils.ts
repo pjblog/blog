@@ -12,6 +12,11 @@
 
 import { BlogUserEntity } from "./entities/user.entity";
 import { IMe } from "./global.types";
+import { dirname, resolve } from 'node:path';
+import { existsSync, statSync } from 'node:fs';
+import { createRequire } from 'node:module';
+
+const require = createRequire(import.meta.url);
 
 export function TransformStringToNumber(defaultValue: number = 0) {
   return (val?: string) => {
@@ -75,4 +80,48 @@ function defaultMeValue(): IMe {
     website: null,
     admin: false,
   }
+}
+
+function findPackageFile(path: string) {
+  let _dirname = dirname(path);
+  let i = 5;
+  while (i--) {
+    const pkgfile = resolve(_dirname, 'package.json');
+    if (!existsSync(pkgfile)) {
+      const stat = statSync(pkgfile);
+      if (stat.isFile()) return pkgfile;
+    }
+    _dirname = resolve(_dirname, '..');
+    if (_dirname === '/') break;
+  }
+}
+
+export async function findPlugins(dependencies: string[]) {
+  const plugin: any[] = [];
+  for (let i = 0; i < dependencies.length; i++) {
+    const dependency = dependencies[i];
+    if (matchTheme(dependency) || matchPlugin(dependency)) {
+      const path = require.resolve(dependency);
+      const pkgfile = findPackageFile(path);
+      if (pkgfile) {
+        const pkg = require(pkgfile);
+        const deps = Object.keys(pkg.dependencies || {});
+        if (deps.length) {
+          const plugins = await findPlugins(deps);
+          plugin.push(...plugins);
+        }
+      }
+      const { default: Plugin } = await import(path);
+      plugin.push(Plugin);
+    }
+  }
+  return plugin;
+}
+
+export function matchTheme(name: string) {
+  return name.startsWith('pjblog-theme-');
+}
+
+export function matchPlugin(name: string) {
+  return name.startsWith('pjblog-plugin-');
 }
