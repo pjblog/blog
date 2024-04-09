@@ -82,7 +82,7 @@ function defaultMeValue(): IMe {
   }
 }
 
-function findPackageFile(path: string) {
+export function findPackageFile(path: string) {
   let _dirname = dirname(path);
   let i = 5;
   while (i--) {
