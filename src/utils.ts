@@ -82,12 +82,11 @@ function defaultMeValue(): IMe {
   }
 }
 
-export function findPackageFile(path: string) {
-  let _dirname = dirname(path);
+export function findPackageFile(_dirname: string) {
   let i = 5;
   while (i--) {
     const pkgfile = resolve(_dirname, 'package.json');
-    if (!existsSync(pkgfile)) {
+    if (existsSync(pkgfile)) {
       const stat = statSync(pkgfile);
       if (stat.isFile()) return pkgfile;
     }
@@ -102,7 +101,7 @@ export async function findPlugins(dependencies: string[]) {
     const dependency = dependencies[i];
     if (matchTheme(dependency) || matchPlugin(dependency)) {
       const path = require.resolve(dependency);
-      const pkgfile = findPackageFile(path);
+      const pkgfile = findPackageFile(dirname(path));
       if (pkgfile) {
         const pkg = require(pkgfile);
         const deps = Object.keys(pkg.dependencies || {});
