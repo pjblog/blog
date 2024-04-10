@@ -39,8 +39,8 @@ export default class extends Controller {
     @Me me: BlogUserEntity,
   ) {
     const res = Response.sse(200);
-    const handler = () => res.emit('sse', 'online', {
-      size: this.Online.size,
+    const handler = () => res.emit('sse', {
+      online: this.Online.size,
       list: this.Online.list,
     })
     res.on('close', () => {

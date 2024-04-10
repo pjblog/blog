@@ -1,6 +1,6 @@
 {
   "name": "@pjblog/blog",
-  "version": "2.3.43",
+  "version": "2.3.44",
   "description": "PJBlog 2004-present 博客主程序工程",
   "license": "MIT",
   "type": "module",
@@ -37,7 +37,7 @@
     "@zille/configurator": "^1.1.2",
     "@zille/core": "^1.1.2",
     "@zille/http": "^1.1.12",
-    "@zille/http-controller": "^1.1.18",
+    "@zille/http-controller": "^1.1.19",
     "@zille/ioredis": "^1.1.2",
     "@zille/service": "^1.1.2",
     "@zille/typeorm": "^1.1.14",
