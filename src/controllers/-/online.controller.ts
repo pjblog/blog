@@ -15,15 +15,13 @@ import { Swagger, SwaggerWithGlobal } from '../../lib/swagger/swagger';
 import { Schema } from '../../lib/schema/schema.lib';
 import { NormalErrorCatch } from '../../middlewares/catch.mdw';
 import { Session, SessionMiddleware } from '../../middlewares/session.mdw';
-import { createSSEMiddleware } from '../../middlewares/sse.mdw';
-import { Context } from 'koa';
 import { Online } from '../../applications/online.app';
 import { Me, UserLoginInfoMiddleware } from '../../middlewares/user.mdw';
 import { BlogUserEntity } from '../../entities/user.entity';
 
 @Controller.Injectable()
 @Controller.Method('GET')
-@Controller.Middleware(NormalErrorCatch, SessionMiddleware, UserLoginInfoMiddleware, createSSEMiddleware())
+@Controller.Middleware(NormalErrorCatch, SessionMiddleware, UserLoginInfoMiddleware)
 @Swagger.Definition(SwaggerWithGlobal, path => {
   path
     .summary('SSE')
