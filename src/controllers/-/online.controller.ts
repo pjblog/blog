@@ -61,9 +61,7 @@ export default class extends Controller {
     }
 
     this.Online.event.on('change', handler);
-
-    handler();
-
+    setTimeout(handler, 1000).unref();
     return res;
   }
 }
