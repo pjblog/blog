@@ -13,7 +13,6 @@
 import { Controller, Response } from '@zille/http-controller';
 import { Swagger, SwaggerWithGlobal, createApiSchema } from '../../lib/swagger/swagger';
 import { Schema } from '../../lib/schema/schema.lib';
-import { BlogVariable } from '../../applications/variable.app';
 import { JSONErrorCatch } from '../../middlewares/catch.mdw';
 import { DataBaseMiddleware } from '../../middlewares/database.mdw';
 import { Me, UserHasLoginMiddleware } from '../../middlewares/user.mdw';
@@ -41,8 +40,6 @@ import { BlogUserEntity } from '../../entities/user.entity';
   ));
 })
 export default class extends Controller {
-  @Controller.Inject(BlogVariable)
-  private readonly configs: BlogVariable;
   public async main(@Me user: BlogUserEntity) {
     return Response.json({
       account: user.account,

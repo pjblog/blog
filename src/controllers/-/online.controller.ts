@@ -10,7 +10,7 @@
 
 'use strict';
 
-import { Controller } from '@zille/http-controller';
+import { Controller, Response } from '@zille/http-controller';
 import { Swagger, SwaggerWithGlobal } from '../../lib/swagger/swagger';
 import { Schema } from '../../lib/schema/schema.lib';
 import { NormalErrorCatch } from '../../middlewares/catch.mdw';
@@ -20,7 +20,6 @@ import { Context } from 'koa';
 import { Online } from '../../applications/online.app';
 import { Me, UserLoginInfoMiddleware } from '../../middlewares/user.mdw';
 import { BlogUserEntity } from '../../entities/user.entity';
-import { BlogVariable } from '../../applications/variable.app';
 
 @Controller.Injectable()
 @Controller.Method('GET')
@@ -37,45 +36,35 @@ export default class extends Controller {
   @Controller.Inject(Online)
   private readonly Online: Online;
 
-  @Controller.Inject(BlogVariable)
-  private readonly configs: BlogVariable;
-
   public async main(
-    @Controller.Context(ctx => ctx) ctx: Context,
     @Session token: string,
     @Me me: BlogUserEntity,
   ) {
-    let closed = false;
+    const res = Response.sse(200);
+    const handler = () => res.emit('sse', 'online', {
+      size: this.Online.size,
+      list: this.Online.list,
+    })
+    res.on('close', () => {
+      if (me?.account) {
+        this.Online.del('user:' + me.account);
+      } else {
+        this.Online.del('token:' + token);
+      }
+      this.Online.event.off('change', handler);
+    })
+
     if (me?.account) {
       this.Online.del('token:' + token);
       this.Online.add('user:' + me.account);
     } else {
       this.Online.add('token:' + token);
     }
-    const send = () => ctx.sse.send(JSON.stringify({
-      online: this.Online.size,
-      list: this.Online.list,
-    }));
-    const refreshExpire = this.configs.get('onlineRefreshExpire');
-    const timer = setInterval(send, refreshExpire * 1000).unref();
-    const handler = () => {
-      clearInterval(timer);
-      if (!closed) send();
-    }
 
     this.Online.event.on('change', handler);
 
-    const close = () => {
-      closed = true;
-      if (me?.account) {
-        this.Online.del('user:' + me.account);
-      } else {
-        this.Online.del('token:' + token);
-      }
-      clearInterval(timer);
-      this.Online.event.off('change', handler);
-      ctx.sse.end();
-    }
-    ctx.req.on('close', close);
+    handler();
+
+    return res;
   }
 }

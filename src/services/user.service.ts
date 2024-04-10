@@ -168,7 +168,7 @@ export class UserService extends Service {
       value: account,
       relative_key: account_token,
     }, maxAgeSec);
-    await this.cache.connection.set(account, {
+    await this.cache.connection.set(account_token, {
       value: token,
       relative_key: key,
     }, maxAgeSec);
