@@ -40,8 +40,9 @@ export default class extends Controller {
   ) {
     const res = Response.sse(200);
     const handler = () => res.emit('sse', {
-      online: this.Online.size,
-      list: this.Online.list,
+      onlines: this.Online.size,
+      members: this.Online.list.filter(u => u.startsWith('user:')).length,
+      visitors: this.Online.list.filter(u => u.startsWith('token:')).length,
     })
     res.on('close', () => {
       if (me?.account) {
