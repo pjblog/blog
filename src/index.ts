@@ -70,6 +70,7 @@ export * from './middlewares/http.body.mdw';
 export * from './middlewares/media.mdw';
 export * from './middlewares/user.mdw';
 export * from './middlewares/session.mdw';
+export * from './middlewares/close.mdw';
 
 export * from './lib/plugin.lib';
 export * from './lib/cache.lib';

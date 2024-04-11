@@ -13,7 +13,6 @@
 import { Middleware } from "koa";
 import { UserService } from "../services/user.service";
 import { UserCache } from "../caches/user.cache";
-import { container } from "@zille/application";
 import { Storage } from "../applications/cache/cache.app";
 import { BlogUserEntity } from "../entities/user.entity";
 import { Controller } from '@zille/http-controller';

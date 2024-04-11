@@ -23,10 +23,17 @@ import { Me, UserLoginInfoMiddleware } from '../../../middlewares/user.mdw';
 import { BlogUserEntity } from '../../../entities/user.entity';
 import { Context } from '@zille/core';
 import { SessionMiddleware } from '../../../middlewares/session.mdw';
+import { BlogCloseMiddleware } from '../../../middlewares/close.mdw';
 
 @Controller.Injectable()
 @Controller.Method('GET')
-@Controller.Middleware(NormalErrorCatch, DataBaseMiddleware(), UserLoginInfoMiddleware, SessionMiddleware)
+@Controller.Middleware(
+  NormalErrorCatch,
+  BlogCloseMiddleware,
+  DataBaseMiddleware(),
+  UserLoginInfoMiddleware,
+  SessionMiddleware,
+)
 @Swagger.Definition(SwaggerWithWebPage, path => {
   path
     .summary('归档 - 年')

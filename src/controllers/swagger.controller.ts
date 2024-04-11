@@ -21,6 +21,7 @@ import { Schema } from '../lib/schema/schema.lib';
 import { BlogVariable } from '../applications/variable.app';
 import { Exception } from '../lib/exception';
 import { NormalErrorCatch } from '../middlewares/catch.mdw';
+import { BlogCloseMiddleware } from '../middlewares/close.mdw';
 
 const __dirname = fileURLToPath(new URL('.', import.meta.url));
 const swaggerFilePath = resolve(__dirname, '../../templates/swagger.ejs');
@@ -29,7 +30,10 @@ const render = compile(tempaltePath);
 
 @Controller.Injectable()
 @Controller.Method('GET')
-@Controller.Middleware(NormalErrorCatch)
+@Controller.Middleware(
+  NormalErrorCatch,
+  BlogCloseMiddleware,
+)
 @Swagger.Definition(SwaggerWithGlobal, path => {
   path
     .summary('Swagger')
